@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PVC Glue & Cleaner Calculator | Water In Motion</title>
+<meta name="description" content="Calculate PVC solvent cement and cleaner requirements for pool and water feature piping projects.">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f2b46">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧴</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f4f1ec;
+  --bg2: #fff;
+  --fg: #1a1a1a;
+  --fg2: #555;
+  --accent: #0f2b46;
+  --accent2: #1a73e8;
+  --accent3: #e8f0fe;
+  --orange: #e67e22;
+  --green: #27ae60;
+  --red: #c0392b;
+  --border: #ddd;
+  --radius: 10px;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--fg);
+  line-height:1.6;
+  min-height:100vh;
+}
+/* Header */
+.header {
+  background: linear-gradient(135deg, #0f2b46 0%, #1a4a6e 100%);
+  color:#fff;
+  padding:20px 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:12px;
+  position:sticky;
+  top:0;
+  z-index:100;
+  box-shadow:0 4px 20px rgba(0,0,0,0.2);
+}
+.header h1 {
+  font-size:1.3rem;
+  font-weight:700;
+  letter-spacing:-0.5px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.header h1 span { font-size:1.5rem; }
+.header-actions { display:flex; gap:8px; flex-wrap:wrap; }
+.btn {
+  padding:8px 16px;
+  border:none;
+  border-radius:6px;
+  font-family:inherit;
+  font-size:0.85rem;
+  font-weight:600;
+  cursor:pointer;
+  transition:all 0.2s;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.btn:hover { transform:translateY(-1px); }
+.btn-primary { background:#1a73e8; color:#fff; }
+.btn-primary:hover { background:#1557b0; }
+.btn-success { background:var(--green); color:#fff; }
+.btn-success:hover { background:#219a52; }
+.btn-warning { background:var(--orange); color:#fff; }
+.btn-warning:hover { background:#cf6e17; }
+.btn-danger { background:var(--red); color:#fff; }
+.btn-danger:hover { background:#a93226; }
+.btn-outline { background:transparent; color:#fff; border:1.5px solid rgba(255,255,255,0.4); }
+.btn-outline:hover { background:rgba(255,255,255,0.15); }
+.btn-ghost { background:rgba(255,255,255,0.1); color:#fff; border:1px solid rgba(255,255,255,0.2); }
+.btn-ghost:hover { background:rgba(255,255,255,0.2); }
+/* Main Layout */
+.container { max-width:1200px; margin:0 auto; padding:20px; }
+/* Project Bar */
+.project-bar {
+  background:var(--bg2);
+  border-radius:var(--radius);
+  padding:16px 20px;
+  margin-bottom:20px;
+  box-shadow:var(--shadow);
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.project-bar label { font-weight:600; font-size:0.9rem; color:var(--accent); white-space:nowrap; }
+.project-bar select, .project-bar input[type="text"] {
+  padding:8px 12px;
+  border:1.5px solid var(--border);
+  border-radius:6px;
+  font-family:inherit;
+  font-size:0.9rem;
+  background:#fff;
+  min-width:200px;
+}
+.project-bar select:focus, .project-bar input:focus { outline:none; border-color:var(--accent2); }
+/* Section Cards */
+.section {
+  background:var(--bg2);
+  border-radius:var(--radius);
+  margin-bottom:20px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.section-header {
+  background: linear-gradient(135deg, #0f2b46 0%, #1a4a6e 100%);
+  color:#fff;
+  padding:14px 20px;
+  font-weight:700;
+  font-size:1rem;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  cursor:pointer;
+  user-select:none;
+}
+.section-header:hover { opacity:0.95; }
+.section-header .chevron { transition:transform 0.3s; font-size:0.8rem; margin-left:auto; }
+.section-header.collapsed .chevron { transform:rotate(-90deg); }
+.section-body { padding:20px; }
+.section-body.collapsed { display:none; }
+/* Form Grid */
+.fixture-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(340px, 1fr));
+  gap:16px;
+}
+.fixture-card {
+  border:1.5px solid var(--border);
+  border-radius:8px;
+  padding:16px;
+  background:#fafafa;
+  transition:border-color 0.2s;
+}
+.fixture-card:hover { border-color:var(--accent2); }
+.fixture-card h3 {
+  font-size:0.95rem;
+  font-weight:700;
+  color:var(--accent);
+  margin-bottom:12px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.fixture-card h3 .badge {
+  font-size:0.7rem;
+  background:var(--accent3);
+  color:var(--accent2);
+  padding:2px 8px;
+  border-radius:12px;
+  font-weight:600;
+}
+.form-row { display:flex; gap:12px; margin-bottom:10px; align-items:center; }
+.form-row label {
+  font-size:0.82rem;
+  font-weight:500;
+  color:var(--fg2);
+  min-width:110px;
+}
+.form-row input, .form-row select {
+  flex:1;
+  padding:7px 10px;
+  border:1.5px solid var(--border);
+  border-radius:6px;
+  font-family:inherit;
+  font-size:0.85rem;
+  background:#fff;
+}
+.form-row input:focus, .form-row select:focus { outline:none; border-color:var(--accent2); }
+/* Pipeline Section */
+.pipeline-section { margin-bottom:16px; }
+.pipeline-section-header {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
+  padding-bottom:8px;
+  border-bottom:2px solid var(--accent3);
+}
+.pipeline-section-header h3 { font-size:0.95rem; color:var(--accent); }
+.pipeline-section-header select {
+  padding:5px 10px;
+  border:1.5px solid var(--border);
+  border-radius:6px;
+  font-family:inherit;
+  font-size:0.85rem;
+}
+.pipeline-table { width:100%; border-collapse:collapse; font-size:0.85rem; }
+.pipeline-table th {
+  background:var(--accent3);
+  padding:8px 10px;
+  text-align:left;
+  font-weight:600;
+  color:var(--accent);
+  font-size:0.8rem;
+}
+.pipeline-table td { padding:6px 8px; border-bottom:1px solid #eee; }
+.pipeline-table input, .pipeline-table select {
+  width:100%;
+  padding:6px 8px;
+  border:1.5px solid var(--border);
+  border-radius:5px;
+  font-family:inherit;
+  font-size:0.83rem;
+}
+.pipeline-table input:focus, .pipeline-table select:focus { outline:none; border-color:var(--accent2); }
+.pipeline-table .line-num {
+  font-family:'Space Mono',monospace;
+  font-weight:700;
+  color:var(--accent2);
+  text-align:center;
+  width:40px;
+}
+.pipeline-table .calc-cell {
+  font-family:'Space Mono',monospace;
+  font-weight:600;
+  color:var(--green);
+  text-align:center;
+}
+/* Results */
+.results-table-wrapper {
+  overflow-x:auto;
+  border:1.5px solid var(--border);
+  border-radius:8px;
+}
+.results-table { width:100%; border-collapse:collapse; font-size:0.83rem; }
+.results-table th {
+  background:var(--accent);
+  color:#fff;
+  padding:10px 12px;
+  text-align:left;
+  font-weight:600;
+  font-size:0.8rem;
+  white-space:nowrap;
+  position:sticky;
+  top:0;
+}
+.results-table td {
+  padding:8px 12px;
+  border-bottom:1px solid #eee;
+  white-space:nowrap;
+}
+.results-table tr:nth-child(even) { background:#f9f9f9; }
+.results-table tr:hover { background:var(--accent3); }
+.results-table .total-row {
+  background:var(--accent)!important;
+  color:#fff;
+  font-weight:700;
+}
+.results-table .total-row td { border-bottom:none; }
+.results-table .subtotal-row { background:#e8f0fe!important; font-weight:600; }
+.results-table .num { font-family:'Space Mono',monospace; text-align:right; }
+/* Actions Bar */
+.actions-bar {
+  display:flex;
+  gap:8px;
+  margin-bottom:16px;
+  flex-wrap:wrap;
+}
+/* Toast */
+.toast {
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:var(--accent);
+  color:#fff;
+  padding:12px 20px;
+  border-radius:8px;
+  font-weight:600;
+  font-size:0.85rem;
+  box-shadow:0 4px 20px rgba(0,0,0,0.25);
+  transform:translateY(100px);
+  opacity:0;
+  transition:all 0.3s;
+  z-index:999;
+}
+.toast.show { transform:translateY(0); opacity:1; }
+/* Product Info */
+.product-info {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+  gap:12px;
+  margin-top:12px;
+}
+.product-chip {
+  background:var(--accent3);
+  border:1px solid #c8ddf5;
+  border-radius:8px;
+  padding:12px 16px;
+  font-size:0.82rem;
+}
+.product-chip strong { color:var(--accent); }
+.product-chip .mono { font-family:'Space Mono',monospace; color:var(--accent2); }
+/* Summary Cards */
+.summary-cards {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
+  gap:14px;
+  margin-bottom:20px;
+}
+.summary-card {
+  background:linear-gradient(135deg, #0f2b46, #1a4a6e);
+  color:#fff;
+  border-radius:var(--radius);
+  padding:20px;
+  text-align:center;
+}
+.summary-card .val {
+  font-family:'Space Mono',monospace;
+  font-size:2rem;
+  font-weight:700;
+}
+.summary-card .lbl { font-size:0.8rem; opacity:0.8; margin-top:4px; }
+/* Responsive */
+@media(max-width:768px) {
+  .header { padding:14px 16px; }
+  .header h1 { font-size:1.1rem; }
+  .container { padding:12px; }
+  .fixture-grid { grid-template-columns:1fr; }
+  .project-bar { flex-direction:column; align-items:stretch; }
+  .project-bar select, .project-bar input[type="text"] { min-width:auto; }
+  .form-row { flex-direction:column; gap:4px; }
+  .form-row label { min-width:auto; }
+  .summary-cards { grid-template-columns:1fr 1fr; }
+}
+@media print {
+  .header, .project-bar, .actions-bar, .btn, .section-header .chevron { display:none!important; }
+  .section-body.collapsed { display:block!important; }
+  body { background:#fff; }
+  .section { box-shadow:none; border:1px solid #ccc; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1><span>🧴</span> PVC Glue & Cleaner Calculator</h1>
+  <div class="header-actions">
+    <button class="btn btn-ghost" onclick="showInfo()">ℹ️ Product Info</button>
+    <button class="btn btn-outline" onclick="resetAll()">🗑️ Reset</button>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Project Management -->
+  <div class="project-bar" id="projectBar">
+    <label>📁 Project:</label>
+    <select id="projectSelect" onchange="loadProject()">
+      <option value="">— Select Project —</option>
+    </select>
+    <input type="text" id="newProjectName" placeholder="New project name…">
+    <button class="btn btn-primary" onclick="saveProject()">💾 Save</button>
+    <button class="btn btn-success" onclick="addProject()">➕ New</button>
+    <button class="btn btn-danger" onclick="deleteProject()">🗑️</button>
+  </div>
+
+  <!-- Product Info (hidden by default) -->
+  <div class="section" id="infoSection" style="display:none">
+    <div class="section-header" onclick="toggleSection('infoSection')">
+      📋 Selected Products & Basis <span class="chevron">▼</span>
+    </div>
+    <div class="section-body" id="infoSectionBody">
+      <div class="product-info">
+        <div class="product-chip">
+          <strong>PVC Solvent Cement (Glue)</strong><br>
+          Oatey Heavy Duty Clear<br>
+          Product# <span class="mono">30876</span> — 16 oz<br>
+          ASTM D2564 · NSF 61 · IAPMO
+        </div>
+        <div class="product-chip">
+          <strong>Clear Cleaner</strong><br>
+          Oatey Clear Cleaner<br>
+          Product# <span class="mono">30795</span> — 16 oz<br>
+          For ABS/PVC/CPVC · Low VOC
+        </div>
+        <div class="product-chip">
+          <strong>Usage Basis</strong><br>
+          2″ pipe → <span class="mono">12</span> joints/bottle<br>
+          6″ pipe → <span class="mono">4</span> joints/bottle<br>
+          Formula: Joints/Bottle = <span class="mono">24 ÷ size(in)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 1: Pool Fixtures -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection('fixturesSection')">
+      🔧 Pool Fixtures (Fittings at Equipment/Pool) <span class="chevron" id="fixturesSectionChevron">▼</span>
+    </div>
+    <div class="section-body" id="fixturesSectionBody">
+      <div class="fixture-grid" id="fixtureGrid"></div>
+    </div>
+  </div>
+
+  <!-- Section 2: Main Pipeline Runs -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection('pipelineSection')">
+      🔗 Main Pipeline Runs <span class="chevron" id="pipelineSectionChevron">▼</span>
+    </div>
+    <div class="section-body" id="pipelineSectionBody">
+      <div id="pipelineContainer"></div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection('resultsSection')">
+      📊 Calculation Results <span class="chevron" id="resultsSectionChevron">▼</span>
+    </div>
+    <div class="section-body" id="resultsSectionBody">
+      <div class="actions-bar">
+        <button class="btn btn-primary" onclick="calculate()">🔄 Calculate</button>
+        <button class="btn btn-success" onclick="copyTable()">📋 Copy Table</button>
+        <button class="btn btn-warning" onclick="exportCSV()">📥 Export CSV</button>
+        <button class="btn btn-outline" style="color:var(--accent);border-color:var(--accent);" onclick="window.print()">🖨️ Print</button>
+      </div>
+      <div class="summary-cards" id="summaryCards" style="display:none;"></div>
+      <div class="results-table-wrapper">
+        <table class="results-table" id="resultsTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Category</th>
+              <th>Item</th>
+              <th>Pipe Size</th>
+              <th>Qty / Distance</th>
+              <th>Total Joints</th>
+              <th>Glue (bottles)</th>
+              <th>Cleaner (bottles)</th>
+            </tr>
+          </thead>
+          <tbody id="resultsBody">
+            <tr><td colspan="8" style="text-align:center;padding:30px;color:#999;">Click "Calculate" to generate results</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ========== CONFIG ==========
+const PIPE_SIZES = ['1"','1.5"','2"','2.5"','3"','4"','6"','8"','10"'];
+const PIPE_SIZE_INCHES = { '1"':1, '1.5"':1.5, '2"':2, '2.5"':2.5, '3"':3, '4"':4, '6"':6, '8"':8, '10"':10 };
+const CONSTANT = 24; // inch·joints per bottle
+
+const FIXTURES = [
+  { id:'inlet', name:'Pool/Feature Inlet', icon:'🔵', jointsEach:4, defaultPipe:'2"' },
+  { id:'vacuum', name:'Pool/Feature Vacuum Point', icon:'🟣', jointsEach:4, defaultPipe:'2"' },
+  { id:'maindrain', name:'Main Drain', icon:'🔴', jointsEach:3, defaultPipe:'3"' },
+  { id:'overflow', name:'Overflow Drain', icon:'🟠', jointsEach:3, defaultPipe:'4"' },
+  { id:'skimmer', name:'Skimmer', icon:'🟡', jointsEach:3, defaultPipe:'2"' },
+  { id:'heatcool', name:'Heat Cool Unit', icon:'🟢', jointsEach:5, defaultPipe:'3"' },
+];
+
+const PIPELINE_TYPES = [
+  { id:'p_inlet', name:'Main Inlet Line', icon:'🔵' },
+  { id:'p_vacuum', name:'Main Vacuum Line', icon:'🟣' },
+  { id:'p_drain', name:'Main Drain Line', icon:'🔴' },
+  { id:'p_overflow', name:'Main Overflow Line', icon:'🟠' },
+  { id:'p_skimmer', name:'Main Skimmer Line', icon:'🟡' },
+  { id:'p_heatcool', name:'Main Heat Cool Unit Line', icon:'🟢' },
+];
+
+// ========== STATE ==========
+let currentProject = '';
+
+// ========== INIT ==========
+document.addEventListener('DOMContentLoaded', () => {
+  buildFixtureCards();
+  buildPipelineSections();
+  loadProjectList();
+});
+
+// ========== BUILD UI ==========
+function buildFixtureCards() {
+  const grid = document.getElementById('fixtureGrid');
+  grid.innerHTML = FIXTURES.map(f => `
+    <div class="fixture-card">
+      <h3>${f.icon} ${f.name} <span class="badge">${f.jointsEach} joints each</span></h3>
+      <div class="form-row">
+        <label>Total Number:</label>
+        <input type="number" id="fix_${f.id}_qty" min="0" value="0" onchange="autoCalc()">
+      </div>
+      <div class="form-row">
+        <label>Pipe Size:</label>
+        <select id="fix_${f.id}_pipe" onchange="autoCalc()">
+          ${PIPE_SIZES.map(s => `<option value="${s}" ${s===f.defaultPipe?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+  `).join('');
+}
+
+function buildPipelineSections() {
+  const container = document.getElementById('pipelineContainer');
+  container.innerHTML = PIPELINE_TYPES.map(pt => `
+    <div class="pipeline-section">
+      <div class="pipeline-section-header">
+        <h3>${pt.icon} ${pt.name}</h3>
+        <label style="font-size:0.82rem;font-weight:500;color:var(--fg2);margin-left:auto;">Lines:</label>
+        <select id="pl_${pt.id}_count" onchange="updatePipelineRows('${pt.id}')">
+          ${[0,1,2,3,4,5,6,7,8,9,10].map(n => `<option value="${n}">${n}</option>`).join('')}
+        </select>
+      </div>
+      <div id="pl_${pt.id}_table_wrap" style="display:none;">
+        <table class="pipeline-table">
+          <thead>
+            <tr>
+              <th style="width:40px">#</th>
+              <th>Pipe Size</th>
+              <th>Distance (m)</th>
+              <th>Joints (1 per 5m)</th>
+            </tr>
+          </thead>
+          <tbody id="pl_${pt.id}_tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updatePipelineRows(typeId) {
+  const count = parseInt(document.getElementById(`pl_${typeId}_count`).value);
+  const wrap = document.getElementById(`pl_${typeId}_table_wrap`);
+  const tbody = document.getElementById(`pl_${typeId}_tbody`);
+  if (count === 0) { wrap.style.display = 'none'; tbody.innerHTML = ''; return; }
+  wrap.style.display = 'block';
+  tbody.innerHTML = '';
+  for (let i = 1; i <= count; i++) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="line-num">${i}</td>
+      <td>
+        <select id="pl_${typeId}_${i}_pipe" onchange="updateJointCalc('${typeId}',${i})">
+          ${PIPE_SIZES.map(s => `<option value="${s}" ${s==='2"'?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </td>
+      <td><input type="number" id="pl_${typeId}_${i}_dist" min="0" value="0" step="0.1" onchange="updateJointCalc('${typeId}',${i})"></td>
+      <td class="calc-cell" id="pl_${typeId}_${i}_joints">0</td>
+    `;
+    tbody.appendChild(tr);
+  }
+}
+
+function updateJointCalc(typeId, lineNum) {
+  const dist = parseFloat(document.getElementById(`pl_${typeId}_${lineNum}_dist`).value) || 0;
+  const joints = dist > 0 ? Math.ceil(dist / 5) : 0;
+  document.getElementById(`pl_${typeId}_${lineNum}_joints`).textContent = joints;
+}
+
+// ========== CALCULATION ==========
+function bottlesPerJoint(pipeSizeStr) {
+  const inches = PIPE_SIZE_INCHES[pipeSizeStr] || 2;
+  return inches / CONSTANT;
+}
+
+function calculate() {
+  const rows = [];
+  let totalJoints = 0, totalGlue = 0, totalCleaner = 0;
+  let rowNum = 0;
+
+  // === Fixtures ===
+  let fixJoints=0, fixGlue=0, fixCleaner=0;
+  FIXTURES.forEach(f => {
+    const qty = parseInt(document.getElementById(`fix_${f.id}_qty`).value) || 0;
+    const pipe = document.getElementById(`fix_${f.id}_pipe`).value;
+    if (qty > 0) {
+      const joints = qty * f.jointsEach;
+      const bpj = bottlesPerJoint(pipe);
+      const glue = joints * bpj;
+      const cleaner = joints * bpj;
+      rowNum++;
+      rows.push({
+        num: rowNum,
+        category: 'Pool Fixtures',
+        item: `${f.name} (×${qty})`,
+        pipe: pipe,
+        qtyDist: `${qty} nos`,
+        joints: joints,
+        glue: glue,
+        cleaner: cleaner,
+        isSubtotal: false
+      });
+      fixJoints += joints; fixGlue += glue; fixCleaner += cleaner;
+    }
+  });
+  if (fixJoints > 0) {
+    rows.push({ category:'Pool Fixtures', item:'Subtotal', joints:fixJoints, glue:fixGlue, cleaner:fixCleaner, isSubtotal:true });
+  }
+
+  // === Pipeline Runs ===
+  PIPELINE_TYPES.forEach(pt => {
+    const count = parseInt(document.getElementById(`pl_${pt.id}_count`).value) || 0;
+    let secJoints=0, secGlue=0, secCleaner=0;
+    for (let i = 1; i <= count; i++) {
+      const pipe = document.getElementById(`pl_${pt.id}_${i}_pipe`).value;
+      const dist = parseFloat(document.getElementById(`pl_${pt.id}_${i}_dist`).value) || 0;
+      if (dist > 0) {
+        const joints = Math.ceil(dist / 5);
+        const bpj = bottlesPerJoint(pipe);
+        const glue = joints * bpj;
+        const cleaner = joints * bpj;
+        rowNum++;
+        rows.push({
+          num: rowNum,
+          category: pt.name,
+          item: `Line ${i} — ${dist}m`,
+          pipe: pipe,
+          qtyDist: `${dist} m`,
+          joints: joints,
+          glue: glue,
+          cleaner: cleaner,
+          isSubtotal: false
+        });
+        secJoints += joints; secGlue += glue; secCleaner += cleaner;
+      }
+    }
+    if (secJoints > 0) {
+      rows.push({ category:pt.name, item:'Subtotal', joints:secJoints, glue:secGlue, cleaner:secCleaner, isSubtotal:true });
+    }
+    totalJoints += secJoints; totalGlue += secGlue; totalCleaner += secCleaner;
+  });
+
+  totalJoints += fixJoints; totalGlue += fixGlue; totalCleaner += fixCleaner;
+
+  // Render
+  const tbody = document.getElementById('resultsBody');
+  if (rows.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:#999;">No data entered. Please fill in fixture quantities or pipeline distances.</td></tr>';
+    document.getElementById('summaryCards').style.display = 'none';
+    return;
+  }
+
+  tbody.innerHTML = rows.map(r => {
+    if (r.isSubtotal) {
+      return `<tr class="subtotal-row">
+        <td></td><td></td><td><strong>${r.item}</strong></td><td></td><td></td>
+        <td class="num"><strong>${r.joints}</strong></td>
+        <td class="num"><strong>${r.glue.toFixed(2)}</strong></td>
+        <td class="num"><strong>${r.cleaner.toFixed(2)}</strong></td>
+      </tr>`;
+    }
+    return `<tr>
+      <td class="num">${r.num}</td>
+      <td>${r.category}</td>
+      <td>${r.item}</td>
+      <td>${r.pipe}</td>
+      <td>${r.qtyDist}</td>
+      <td class="num">${r.joints}</td>
+      <td class="num">${r.glue.toFixed(2)}</td>
+      <td class="num">${r.cleaner.toFixed(2)}</td>
+    </tr>`;
+  }).join('') + `
+    <tr class="total-row">
+      <td colspan="5" style="text-align:right;">GRAND TOTAL</td>
+      <td class="num">${totalJoints}</td>
+      <td class="num">${totalGlue.toFixed(2)}</td>
+      <td class="num">${totalCleaner.toFixed(2)}</td>
+    </tr>
+    <tr class="total-row">
+      <td colspan="5" style="text-align:right;">ROUND UP (Order Qty)</td>
+      <td class="num">${totalJoints}</td>
+      <td class="num">${Math.ceil(totalGlue)}</td>
+      <td class="num">${Math.ceil(totalCleaner)}</td>
+    </tr>
+  `;
+
+  // Summary cards
+  const sc = document.getElementById('summaryCards');
+  sc.style.display = 'grid';
+  sc.innerHTML = `
+    <div class="summary-card">
+      <div class="val">${totalJoints}</div>
+      <div class="lbl">Total Joints</div>
+    </div>
+    <div class="summary-card" style="background:linear-gradient(135deg,#e67e22,#f39c12);">
+      <div class="val">${Math.ceil(totalGlue)}</div>
+      <div class="lbl">Glue Bottles (16 oz)</div>
+    </div>
+    <div class="summary-card" style="background:linear-gradient(135deg,#27ae60,#2ecc71);">
+      <div class="val">${Math.ceil(totalCleaner)}</div>
+      <div class="lbl">Cleaner Bottles (16 oz)</div>
+    </div>
+    <div class="summary-card" style="background:linear-gradient(135deg,#8e44ad,#9b59b6);">
+      <div class="val">${rows.filter(r=>!r.isSubtotal).length}</div>
+      <div class="lbl">Line Items</div>
+    </div>
+  `;
+
+  toast('Calculation complete!');
+}
+
+function autoCalc() { /* optional live calc */ }
+
+// ========== PROJECT MANAGEMENT ==========
+function getProjects() {
+  try { return JSON.parse(localStorage.getItem('glue_calc_projects') || '{}'); } catch { return {}; }
+}
+function saveProjects(data) { localStorage.setItem('glue_calc_projects', JSON.stringify(data)); }
+
+function loadProjectList() {
+  const projects = getProjects();
+  const sel = document.getElementById('projectSelect');
+  sel.innerHTML = '<option value="">— Select Project —</option>';
+  Object.keys(projects).sort().forEach(name => {
+    const opt = document.createElement('option');
+    opt.value = name; opt.textContent = name;
+    sel.appendChild(opt);
+  });
+  if (currentProject && projects[currentProject]) {
+    sel.value = currentProject;
+  }
+}
+
+function addProject() {
+  const name = document.getElementById('newProjectName').value.trim();
+  if (!name) { toast('Enter a project name!'); return; }
+  const projects = getProjects();
+  if (projects[name]) { toast('Project already exists!'); return; }
+  projects[name] = {};
+  saveProjects(projects);
+  currentProject = name;
+  document.getElementById('newProjectName').value = '';
+  loadProjectList();
+  document.getElementById('projectSelect').value = name;
+  resetForm();
+  toast(`Project "${name}" created!`);
+}
+
+function saveProject() {
+  const sel = document.getElementById('projectSelect');
+  let name = sel.value || document.getElementById('newProjectName').value.trim();
+  if (!name) { toast('Select or create a project first!'); return; }
+  const projects = getProjects();
+  projects[name] = collectFormData();
+  saveProjects(projects);
+  currentProject = name;
+  loadProjectList();
+  sel.value = name;
+  toast(`Project "${name}" saved!`);
+}
+
+function loadProject() {
+  const name = document.getElementById('projectSelect').value;
+  if (!name) return;
+  const projects = getProjects();
+  if (!projects[name]) return;
+  currentProject = name;
+  applyFormData(projects[name]);
+  toast(`Project "${name}" loaded!`);
+}
+
+function deleteProject() {
+  const name = document.getElementById('projectSelect').value;
+  if (!name) { toast('Select a project to delete!'); return; }
+  if (!confirm(`Delete project "${name}"?`)) return;
+  const projects = getProjects();
+  delete projects[name];
+  saveProjects(projects);
+  currentProject = '';
+  loadProjectList();
+  resetForm();
+  toast(`Project "${name}" deleted.`);
+}
+
+function collectFormData() {
+  const data = { fixtures:{}, pipelines:{} };
+  FIXTURES.forEach(f => {
+    data.fixtures[f.id] = {
+      qty: document.getElementById(`fix_${f.id}_qty`).value,
+      pipe: document.getElementById(`fix_${f.id}_pipe`).value
+    };
+  });
+  PIPELINE_TYPES.forEach(pt => {
+    const count = parseInt(document.getElementById(`pl_${pt.id}_count`).value) || 0;
+    data.pipelines[pt.id] = { count: count, lines:[] };
+    for (let i = 1; i <= count; i++) {
+      const pipeEl = document.getElementById(`pl_${pt.id}_${i}_pipe`);
+      const distEl = document.getElementById(`pl_${pt.id}_${i}_dist`);
+      if (pipeEl && distEl) {
+        data.pipelines[pt.id].lines.push({ pipe: pipeEl.value, dist: distEl.value });
+      }
+    }
+  });
+  return data;
+}
+
+function applyFormData(data) {
+  if (!data) return;
+  if (data.fixtures) {
+    FIXTURES.forEach(f => {
+      if (data.fixtures[f.id]) {
+        document.getElementById(`fix_${f.id}_qty`).value = data.fixtures[f.id].qty || 0;
+        document.getElementById(`fix_${f.id}_pipe`).value = data.fixtures[f.id].pipe || f.defaultPipe;
+      }
+    });
+  }
+  if (data.pipelines) {
+    PIPELINE_TYPES.forEach(pt => {
+      const pd = data.pipelines[pt.id];
+      if (pd) {
+        document.getElementById(`pl_${pt.id}_count`).value = pd.count || 0;
+        updatePipelineRows(pt.id);
+        if (pd.lines) {
+          pd.lines.forEach((line, idx) => {
+            const i = idx + 1;
+            const pipeEl = document.getElementById(`pl_${pt.id}_${i}_pipe`);
+            const distEl = document.getElementById(`pl_${pt.id}_${i}_dist`);
+            if (pipeEl) pipeEl.value = line.pipe;
+            if (distEl) distEl.value = line.dist;
+            updateJointCalc(pt.id, i);
+          });
+        }
+      }
+    });
+  }
+}
+
+function resetForm() {
+  FIXTURES.forEach(f => {
+    document.getElementById(`fix_${f.id}_qty`).value = 0;
+    document.getElementById(`fix_${f.id}_pipe`).value = f.defaultPipe;
+  });
+  PIPELINE_TYPES.forEach(pt => {
+    document.getElementById(`pl_${pt.id}_count`).value = 0;
+    updatePipelineRows(pt.id);
+  });
+  document.getElementById('resultsBody').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:#999;">Click "Calculate" to generate results</td></tr>';
+  document.getElementById('summaryCards').style.display = 'none';
+}
+
+function resetAll() {
+  if (!confirm('Reset all inputs?')) return;
+  resetForm();
+  toast('Form reset.');
+}
+
+// ========== EXPORT / COPY ==========
+function copyTable() {
+  const table = document.getElementById('resultsTable');
+  const rows = table.querySelectorAll('tr');
+  let text = '';
+  rows.forEach(row => {
+    const cells = row.querySelectorAll('th,td');
+    const vals = [];
+    cells.forEach(c => vals.push(c.textContent.trim()));
+    text += vals.join('\t') + '\n';
+  });
+  navigator.clipboard.writeText(text).then(() => toast('Table copied to clipboard!')).catch(() => {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    toast('Table copied!');
+  });
+}
+
+function exportCSV() {
+  const table = document.getElementById('resultsTable');
+  const rows = table.querySelectorAll('tr');
+  let csv = '';
+  rows.forEach(row => {
+    const cells = row.querySelectorAll('th,td');
+    const vals = [];
+    cells.forEach(c => vals.push('"' + c.textContent.trim().replace(/"/g,'""') + '"'));
+    csv += vals.join(',') + '\n';
+  });
+  const projectName = currentProject || 'glue_cleaner_calc';
+  const blob = new Blob([csv], { type:'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${projectName.replace(/\s+/g,'_')}_glue_cleaner.csv`;
+  a.click();
+  toast('CSV exported!');
+}
+
+// ========== UI HELPERS ==========
+function toggleSection(id) {
+  const body = document.getElementById(id + 'Body');
+  const chevron = document.getElementById(id + 'Chevron');
+  if (body) body.classList.toggle('collapsed');
+  if (chevron) {
+    const header = chevron.closest('.section-header');
+    if (header) header.classList.toggle('collapsed');
+  }
+}
+
+function showInfo() {
+  const s = document.getElementById('infoSection');
+  s.style.display = s.style.display === 'none' ? 'block' : 'none';
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>

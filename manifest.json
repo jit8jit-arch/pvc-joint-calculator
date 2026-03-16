@@ -1,0 +1,10 @@
+{
+  "name": "PVC Glue & Cleaner Calculator",
+  "short_name": "Glue Calc",
+  "description": "Calculate PVC solvent cement and cleaner requirements for pool and water feature piping projects.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f4f1ec",
+  "theme_color": "#0f2b46",
+  "icons": []
+}
