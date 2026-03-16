@@ -3,453 +3,239 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PVC Glue & Cleaner Calculator | Water In Motion</title>
+<title>PVC Joint Calculator | Water In Motion</title>
 <meta name="description" content="Calculate PVC solvent cement and cleaner requirements for pool and water feature piping projects.">
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0f2b46">
+<meta name="theme-color" content="#0a1e30">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧴</text></svg>">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #f4f1ec;
-  --bg2: #fff;
-  --fg: #1a1a1a;
-  --fg2: #555;
-  --accent: #0f2b46;
-  --accent2: #1a73e8;
-  --accent3: #e8f0fe;
-  --orange: #e67e22;
-  --green: #27ae60;
-  --red: #c0392b;
-  --border: #ddd;
-  --radius: 10px;
-  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+:root{
+  --bg:#eae6df;--bg2:#fff;--fg:#111;--fg2:#555;--fg3:#888;
+  --navy:#0a1e30;--navy2:#133a5c;--blue:#2563eb;--blue2:#dbeafe;
+  --orange:#d97706;--orange2:#fef3c7;--green:#059669;--green2:#d1fae5;
+  --red:#dc2626;--red2:#fee2e2;--purple:#7c3aed;--purple2:#ede9fe;
+  --border:#d4d0c8;--radius:8px;--shadow:0 2px 10px rgba(0,0,0,.07);
 }
-* { margin:0; padding:0; box-sizing:border-box; }
-body {
-  font-family:'DM Sans',sans-serif;
-  background:var(--bg);
-  color:var(--fg);
-  line-height:1.6;
-  min-height:100vh;
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--fg);line-height:1.55;min-height:100vh}
+.mono{font-family:'JetBrains Mono',monospace}
+
+.hdr{background:var(--navy);color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:200;box-shadow:0 4px 24px rgba(0,0,0,.3)}
+.hdr h1{font-size:1.15rem;font-weight:700;display:flex;align-items:center;gap:8px;letter-spacing:-.3px}
+.hdr-r{display:flex;gap:6px;flex-wrap:wrap}
+
+.b{padding:7px 14px;border:none;border-radius:5px;font-family:inherit;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.b:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.b:active{transform:translateY(0)}
+.bp{background:var(--blue);color:#fff}.bs{background:var(--green);color:#fff}
+.bw{background:var(--orange);color:#fff}.bd{background:var(--red);color:#fff}
+.bo{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.35)}
+.bg{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2)}
+.bsm{padding:5px 10px;font-size:.75rem}
+
+.wrap{max-width:1260px;margin:0 auto;padding:16px}
+
+.pbar{background:var(--bg2);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px;box-shadow:var(--shadow);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pbar label{font-weight:600;font-size:.85rem;color:var(--navy)}
+.pbar select,.pbar input[type=text]{padding:7px 11px;border:1.5px solid var(--border);border-radius:5px;font-family:inherit;font-size:.85rem;background:#fff}
+.pbar select:focus,.pbar input:focus{outline:none;border-color:var(--blue)}
+.auto-badge{font-size:.72rem;color:var(--green);font-weight:700;opacity:0;transition:opacity .3s}
+.auto-badge.vis{opacity:1}
+
+.sec{background:var(--bg2);border-radius:var(--radius);margin-bottom:14px;box-shadow:var(--shadow);overflow:hidden}
+.sec-h{padding:12px 18px;font-weight:700;font-size:.92rem;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;color:#fff}
+.sec-h .chv{transition:transform .25s;font-size:.7rem;margin-left:auto;opacity:.7}
+.sec-h.coll .chv{transform:rotate(-90deg)}
+.sec-b{padding:16px 18px}
+.sec-b.coll{display:none}
+
+.sh-pool{background:linear-gradient(135deg,#0a1e30,#133a5c)}
+.sh-equip{background:linear-gradient(135deg,#7c3aed,#5b21b6)}
+.sh-pipe{background:linear-gradient(135deg,#d97706,#b45309)}
+.sh-ptest{background:linear-gradient(135deg,#059669,#047857)}
+.sh-result{background:linear-gradient(135deg,#dc2626,#b91c1c)}
+
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:12px}
+.fcard{border:1.5px solid var(--border);border-radius:7px;padding:14px;background:#fafaf7;transition:border-color .2s}
+.fcard:hover{border-color:var(--blue)}
+.fcard h4{font-size:.88rem;font-weight:700;color:var(--navy);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.fcard .badge{font-size:.65rem;background:var(--blue2);color:var(--blue);padding:2px 7px;border-radius:10px;font-weight:600}
+.frow{display:flex;gap:10px;margin-bottom:8px;align-items:center}
+.frow label{font-size:.78rem;font-weight:500;color:var(--fg2);min-width:95px}
+.frow input,.frow select{flex:1;padding:6px 9px;border:1.5px solid var(--border);border-radius:5px;font-family:inherit;font-size:.82rem;background:#fff}
+.frow input:focus,.frow select:focus{outline:none;border-color:var(--blue)}
+
+.plsec{margin-bottom:14px}
+.plsec-h{display:flex;align-items:center;gap:8px;margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid var(--blue2)}
+.plsec-h h4{font-size:.88rem;color:var(--navy)}
+.plsec-h select{padding:4px 8px;border:1.5px solid var(--border);border-radius:5px;font-family:inherit;font-size:.82rem}
+.ptbl{width:100%;border-collapse:collapse;font-size:.82rem}
+.ptbl th{background:var(--blue2);padding:7px 9px;text-align:left;font-weight:600;color:var(--navy);font-size:.76rem}
+.ptbl td{padding:5px 7px;border-bottom:1px solid #eee}
+.ptbl input,.ptbl select{width:100%;padding:5px 7px;border:1.5px solid var(--border);border-radius:4px;font-family:inherit;font-size:.8rem}
+.ptbl input:focus,.ptbl select:focus{outline:none;border-color:var(--blue)}
+.ptbl .ln{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--blue);text-align:center;width:36px}
+.ptbl .cc{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--green);text-align:center}
+
+.pt-info{background:var(--green2);border:1px solid #a7f3d0;border-radius:7px;padding:12px 16px;font-size:.82rem;color:#065f46;margin-bottom:12px}
+.pt-tbl{width:100%;border-collapse:collapse;font-size:.82rem}
+.pt-tbl th{background:var(--green2);padding:8px 10px;text-align:left;font-weight:600;color:#065f46;font-size:.78rem}
+.pt-tbl td{padding:6px 10px;border-bottom:1px solid #d1fae5}
+.pt-tbl .cc{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--green);text-align:center}
+
+.acts{display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap}
+.scards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:16px}
+.scard{border-radius:var(--radius);padding:18px;text-align:center;color:#fff}
+.scard .sv{font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700}
+.scard .sl{font-size:.75rem;opacity:.8;margin-top:3px}
+.rtw{overflow-x:auto;border:1.5px solid var(--border);border-radius:7px}
+.rtbl{width:100%;border-collapse:collapse;font-size:.8rem}
+.rtbl th{background:var(--navy);color:#fff;padding:9px 11px;text-align:left;font-weight:600;font-size:.76rem;white-space:nowrap;position:sticky;top:0}
+.rtbl td{padding:7px 11px;border-bottom:1px solid #eee;white-space:nowrap}
+.rtbl tr:nth-child(even){background:#f8f8f5}
+.rtbl tr:hover{background:var(--blue2)}
+.rtbl .trow{background:var(--navy)!important;color:#fff;font-weight:700}
+.rtbl .trow td{border-bottom:none}
+.rtbl .strow{background:var(--blue2)!important;font-weight:600}
+.rtbl .num{font-family:'JetBrains Mono',monospace;text-align:right}
+
+.mbg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
+.mbg.show{display:flex}
+.mdl{background:#fff;border-radius:12px;width:100%;max-width:900px;max-height:90vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.mdl-h{background:var(--navy);color:#fff;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:1}
+.mdl-h h2{font-size:1rem;font-weight:700}
+.mdl-b{padding:24px}
+.oh{text-align:center;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid var(--navy)}
+.oh h2{font-size:1.3rem;color:var(--navy);font-weight:800}
+.oh p{font-size:.85rem;color:var(--fg2);margin-top:4px}
+.otbl{width:100%;border-collapse:collapse;font-size:.82rem;margin-bottom:16px}
+.otbl th{background:var(--navy);color:#fff;padding:9px 12px;text-align:left;font-size:.78rem}
+.otbl td{padding:8px 12px;border-bottom:1px solid #ddd}
+.otbl tr:nth-child(even){background:#f5f5f0}
+.otbl .trow{background:var(--navy)!important;color:#fff;font-weight:700}
+.otbl .trow td{border:none}
+.otbl .num{font-family:'JetBrains Mono',monospace;text-align:right}
+.osum{background:var(--blue2);border-radius:8px;padding:16px 20px;margin-bottom:16px}
+.osum h3{font-size:.95rem;color:var(--navy);margin-bottom:8px}
+.orow{display:flex;justify-content:space-between;padding:4px 0;font-size:.85rem}
+.orow strong{font-family:'JetBrains Mono',monospace;color:var(--navy)}
+.oftr{text-align:center;padding-top:12px;border-top:1px solid #ddd;font-size:.75rem;color:var(--fg3)}
+
+.toast{position:fixed;bottom:16px;right:16px;background:var(--navy);color:#fff;padding:10px 18px;border-radius:7px;font-weight:600;font-size:.82rem;box-shadow:0 4px 20px rgba(0,0,0,.25);transform:translateY(80px);opacity:0;transition:all .25s;z-index:999}
+.toast.show{transform:translateY(0);opacity:1}
+
+@media(max-width:768px){
+  .hdr{padding:12px 14px}.hdr h1{font-size:1rem}
+  .wrap{padding:10px}.fgrid{grid-template-columns:1fr}
+  .pbar{flex-direction:column;align-items:stretch}
+  .pbar select,.pbar input[type=text]{min-width:auto}
+  .frow{flex-direction:column;gap:3px}.frow label{min-width:auto}
+  .scards{grid-template-columns:1fr 1fr}
+  .acts{flex-direction:column}.acts .b{width:100%;justify-content:center}
 }
-/* Header */
-.header {
-  background: linear-gradient(135deg, #0f2b46 0%, #1a4a6e 100%);
-  color:#fff;
-  padding:20px 24px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  flex-wrap:wrap;
-  gap:12px;
-  position:sticky;
-  top:0;
-  z-index:100;
-  box-shadow:0 4px 20px rgba(0,0,0,0.2);
-}
-.header h1 {
-  font-size:1.3rem;
-  font-weight:700;
-  letter-spacing:-0.5px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-.header h1 span { font-size:1.5rem; }
-.header-actions { display:flex; gap:8px; flex-wrap:wrap; }
-.btn {
-  padding:8px 16px;
-  border:none;
-  border-radius:6px;
-  font-family:inherit;
-  font-size:0.85rem;
-  font-weight:600;
-  cursor:pointer;
-  transition:all 0.2s;
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-}
-.btn:hover { transform:translateY(-1px); }
-.btn-primary { background:#1a73e8; color:#fff; }
-.btn-primary:hover { background:#1557b0; }
-.btn-success { background:var(--green); color:#fff; }
-.btn-success:hover { background:#219a52; }
-.btn-warning { background:var(--orange); color:#fff; }
-.btn-warning:hover { background:#cf6e17; }
-.btn-danger { background:var(--red); color:#fff; }
-.btn-danger:hover { background:#a93226; }
-.btn-outline { background:transparent; color:#fff; border:1.5px solid rgba(255,255,255,0.4); }
-.btn-outline:hover { background:rgba(255,255,255,0.15); }
-.btn-ghost { background:rgba(255,255,255,0.1); color:#fff; border:1px solid rgba(255,255,255,0.2); }
-.btn-ghost:hover { background:rgba(255,255,255,0.2); }
-/* Main Layout */
-.container { max-width:1200px; margin:0 auto; padding:20px; }
-/* Project Bar */
-.project-bar {
-  background:var(--bg2);
-  border-radius:var(--radius);
-  padding:16px 20px;
-  margin-bottom:20px;
-  box-shadow:var(--shadow);
-  display:flex;
-  align-items:center;
-  gap:12px;
-  flex-wrap:wrap;
-}
-.project-bar label { font-weight:600; font-size:0.9rem; color:var(--accent); white-space:nowrap; }
-.project-bar select, .project-bar input[type="text"] {
-  padding:8px 12px;
-  border:1.5px solid var(--border);
-  border-radius:6px;
-  font-family:inherit;
-  font-size:0.9rem;
-  background:#fff;
-  min-width:200px;
-}
-.project-bar select:focus, .project-bar input:focus { outline:none; border-color:var(--accent2); }
-/* Section Cards */
-.section {
-  background:var(--bg2);
-  border-radius:var(--radius);
-  margin-bottom:20px;
-  box-shadow:var(--shadow);
-  overflow:hidden;
-}
-.section-header {
-  background: linear-gradient(135deg, #0f2b46 0%, #1a4a6e 100%);
-  color:#fff;
-  padding:14px 20px;
-  font-weight:700;
-  font-size:1rem;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  cursor:pointer;
-  user-select:none;
-}
-.section-header:hover { opacity:0.95; }
-.section-header .chevron { transition:transform 0.3s; font-size:0.8rem; margin-left:auto; }
-.section-header.collapsed .chevron { transform:rotate(-90deg); }
-.section-body { padding:20px; }
-.section-body.collapsed { display:none; }
-/* Form Grid */
-.fixture-grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(340px, 1fr));
-  gap:16px;
-}
-.fixture-card {
-  border:1.5px solid var(--border);
-  border-radius:8px;
-  padding:16px;
-  background:#fafafa;
-  transition:border-color 0.2s;
-}
-.fixture-card:hover { border-color:var(--accent2); }
-.fixture-card h3 {
-  font-size:0.95rem;
-  font-weight:700;
-  color:var(--accent);
-  margin-bottom:12px;
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-.fixture-card h3 .badge {
-  font-size:0.7rem;
-  background:var(--accent3);
-  color:var(--accent2);
-  padding:2px 8px;
-  border-radius:12px;
-  font-weight:600;
-}
-.form-row { display:flex; gap:12px; margin-bottom:10px; align-items:center; }
-.form-row label {
-  font-size:0.82rem;
-  font-weight:500;
-  color:var(--fg2);
-  min-width:110px;
-}
-.form-row input, .form-row select {
-  flex:1;
-  padding:7px 10px;
-  border:1.5px solid var(--border);
-  border-radius:6px;
-  font-family:inherit;
-  font-size:0.85rem;
-  background:#fff;
-}
-.form-row input:focus, .form-row select:focus { outline:none; border-color:var(--accent2); }
-/* Pipeline Section */
-.pipeline-section { margin-bottom:16px; }
-.pipeline-section-header {
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin-bottom:10px;
-  padding-bottom:8px;
-  border-bottom:2px solid var(--accent3);
-}
-.pipeline-section-header h3 { font-size:0.95rem; color:var(--accent); }
-.pipeline-section-header select {
-  padding:5px 10px;
-  border:1.5px solid var(--border);
-  border-radius:6px;
-  font-family:inherit;
-  font-size:0.85rem;
-}
-.pipeline-table { width:100%; border-collapse:collapse; font-size:0.85rem; }
-.pipeline-table th {
-  background:var(--accent3);
-  padding:8px 10px;
-  text-align:left;
-  font-weight:600;
-  color:var(--accent);
-  font-size:0.8rem;
-}
-.pipeline-table td { padding:6px 8px; border-bottom:1px solid #eee; }
-.pipeline-table input, .pipeline-table select {
-  width:100%;
-  padding:6px 8px;
-  border:1.5px solid var(--border);
-  border-radius:5px;
-  font-family:inherit;
-  font-size:0.83rem;
-}
-.pipeline-table input:focus, .pipeline-table select:focus { outline:none; border-color:var(--accent2); }
-.pipeline-table .line-num {
-  font-family:'Space Mono',monospace;
-  font-weight:700;
-  color:var(--accent2);
-  text-align:center;
-  width:40px;
-}
-.pipeline-table .calc-cell {
-  font-family:'Space Mono',monospace;
-  font-weight:600;
-  color:var(--green);
-  text-align:center;
-}
-/* Results */
-.results-table-wrapper {
-  overflow-x:auto;
-  border:1.5px solid var(--border);
-  border-radius:8px;
-}
-.results-table { width:100%; border-collapse:collapse; font-size:0.83rem; }
-.results-table th {
-  background:var(--accent);
-  color:#fff;
-  padding:10px 12px;
-  text-align:left;
-  font-weight:600;
-  font-size:0.8rem;
-  white-space:nowrap;
-  position:sticky;
-  top:0;
-}
-.results-table td {
-  padding:8px 12px;
-  border-bottom:1px solid #eee;
-  white-space:nowrap;
-}
-.results-table tr:nth-child(even) { background:#f9f9f9; }
-.results-table tr:hover { background:var(--accent3); }
-.results-table .total-row {
-  background:var(--accent)!important;
-  color:#fff;
-  font-weight:700;
-}
-.results-table .total-row td { border-bottom:none; }
-.results-table .subtotal-row { background:#e8f0fe!important; font-weight:600; }
-.results-table .num { font-family:'Space Mono',monospace; text-align:right; }
-/* Actions Bar */
-.actions-bar {
-  display:flex;
-  gap:8px;
-  margin-bottom:16px;
-  flex-wrap:wrap;
-}
-/* Toast */
-.toast {
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  background:var(--accent);
-  color:#fff;
-  padding:12px 20px;
-  border-radius:8px;
-  font-weight:600;
-  font-size:0.85rem;
-  box-shadow:0 4px 20px rgba(0,0,0,0.25);
-  transform:translateY(100px);
-  opacity:0;
-  transition:all 0.3s;
-  z-index:999;
-}
-.toast.show { transform:translateY(0); opacity:1; }
-/* Product Info */
-.product-info {
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
-  gap:12px;
-  margin-top:12px;
-}
-.product-chip {
-  background:var(--accent3);
-  border:1px solid #c8ddf5;
-  border-radius:8px;
-  padding:12px 16px;
-  font-size:0.82rem;
-}
-.product-chip strong { color:var(--accent); }
-.product-chip .mono { font-family:'Space Mono',monospace; color:var(--accent2); }
-/* Summary Cards */
-.summary-cards {
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
-  gap:14px;
-  margin-bottom:20px;
-}
-.summary-card {
-  background:linear-gradient(135deg, #0f2b46, #1a4a6e);
-  color:#fff;
-  border-radius:var(--radius);
-  padding:20px;
-  text-align:center;
-}
-.summary-card .val {
-  font-family:'Space Mono',monospace;
-  font-size:2rem;
-  font-weight:700;
-}
-.summary-card .lbl { font-size:0.8rem; opacity:0.8; margin-top:4px; }
-/* Responsive */
-@media(max-width:768px) {
-  .header { padding:14px 16px; }
-  .header h1 { font-size:1.1rem; }
-  .container { padding:12px; }
-  .fixture-grid { grid-template-columns:1fr; }
-  .project-bar { flex-direction:column; align-items:stretch; }
-  .project-bar select, .project-bar input[type="text"] { min-width:auto; }
-  .form-row { flex-direction:column; gap:4px; }
-  .form-row label { min-width:auto; }
-  .summary-cards { grid-template-columns:1fr 1fr; }
-}
-@media print {
-  .header, .project-bar, .actions-bar, .btn, .section-header .chevron { display:none!important; }
-  .section-body.collapsed { display:block!important; }
-  body { background:#fff; }
-  .section { box-shadow:none; border:1px solid #ccc; }
+@media print{
+  .hdr,.pbar,.acts,.b,.sec-h .chv,.mbg{display:none!important}
+  .sec-b.coll{display:block!important}
+  body{background:#fff}.sec{box-shadow:none;border:1px solid #ccc}
+  .scards{break-inside:avoid}
 }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <h1><span>🧴</span> PVC Glue & Cleaner Calculator</h1>
-  <div class="header-actions">
-    <button class="btn btn-ghost" onclick="showInfo()">ℹ️ Product Info</button>
-    <button class="btn btn-outline" onclick="resetAll()">🗑️ Reset</button>
+<div class="hdr">
+  <h1>🧴 PVC Joint Calculator <span style="font-weight:300;font-size:.75rem;opacity:.6">v2.0</span></h1>
+  <div class="hdr-r">
+    <button class="b bg" onclick="showInfo()">ℹ️ Info</button>
+    <button class="b bo" onclick="resetAll()">🗑️ Reset</button>
   </div>
 </div>
 
-<div class="container">
-  <!-- Project Management -->
-  <div class="project-bar" id="projectBar">
+<div class="wrap">
+  <div class="pbar">
     <label>📁 Project:</label>
-    <select id="projectSelect" onchange="loadProject()">
-      <option value="">— Select Project —</option>
-    </select>
-    <input type="text" id="newProjectName" placeholder="New project name…">
-    <button class="btn btn-primary" onclick="saveProject()">💾 Save</button>
-    <button class="btn btn-success" onclick="addProject()">➕ New</button>
-    <button class="btn btn-danger" onclick="deleteProject()">🗑️</button>
+    <select id="projSel" onchange="loadProject()"><option value="">— Select —</option></select>
+    <input type="text" id="projName" placeholder="New project name…" style="min-width:180px">
+    <button class="b bp bsm" onclick="saveProject()">💾 Save</button>
+    <button class="b bs bsm" onclick="addProject()">➕ New</button>
+    <button class="b bd bsm" onclick="deleteProject()">🗑️</button>
+    <span class="auto-badge" id="autoBadge">✓ Auto-saved</span>
   </div>
 
-  <!-- Product Info (hidden by default) -->
-  <div class="section" id="infoSection" style="display:none">
-    <div class="section-header" onclick="toggleSection('infoSection')">
-      📋 Selected Products & Basis <span class="chevron">▼</span>
-    </div>
-    <div class="section-body" id="infoSectionBody">
-      <div class="product-info">
-        <div class="product-chip">
-          <strong>PVC Solvent Cement (Glue)</strong><br>
-          Oatey Heavy Duty Clear<br>
-          Product# <span class="mono">30876</span> — 16 oz<br>
-          ASTM D2564 · NSF 61 · IAPMO
+  <div class="sec" id="infoSec" style="display:none">
+    <div class="sec-h sh-pool" onclick="tog('infoSec')">📋 Product Info & Basis <span class="chv">▼</span></div>
+    <div class="sec-b" id="infoSecB">
+      <div class="fgrid">
+        <div style="background:var(--blue2);border:1px solid #93c5fd;border-radius:7px;padding:12px 16px;font-size:.82rem">
+          <strong style="color:var(--navy)">PVC Solvent Cement (Glue)</strong><br>Oatey Heavy Duty Clear<br>Product# <span class="mono" style="color:var(--blue)">30876</span> — 16 oz<br>ASTM D2564 · NSF 61 · IAPMO
         </div>
-        <div class="product-chip">
-          <strong>Clear Cleaner</strong><br>
-          Oatey Clear Cleaner<br>
-          Product# <span class="mono">30795</span> — 16 oz<br>
-          For ABS/PVC/CPVC · Low VOC
+        <div style="background:var(--green2);border:1px solid #6ee7b7;border-radius:7px;padding:12px 16px;font-size:.82rem">
+          <strong style="color:#065f46">Clear Cleaner</strong><br>Oatey Clear Cleaner<br>Product# <span class="mono" style="color:var(--green)">30795</span> — 16 oz<br>For ABS/PVC/CPVC · Low VOC
         </div>
-        <div class="product-chip">
-          <strong>Usage Basis</strong><br>
-          2″ pipe → <span class="mono">12</span> joints/bottle<br>
-          6″ pipe → <span class="mono">4</span> joints/bottle<br>
-          Formula: Joints/Bottle = <span class="mono">24 ÷ size(in)</span>
+        <div style="background:var(--orange2);border:1px solid #fcd34d;border-radius:7px;padding:12px 16px;font-size:.82rem">
+          <strong style="color:#92400e">Usage Basis</strong><br>2″ → <span class="mono">12</span> joints/bottle &nbsp;|&nbsp; 6″ → <span class="mono">4</span> joints/bottle<br>Formula: <span class="mono">Bottles = Joints × (Pipe″ ÷ 24)</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Section 1: Pool Fixtures -->
-  <div class="section">
-    <div class="section-header" onclick="toggleSection('fixturesSection')">
-      🔧 Pool Fixtures (Fittings at Equipment/Pool) <span class="chevron" id="fixturesSectionChevron">▼</span>
-    </div>
-    <div class="section-body" id="fixturesSectionBody">
-      <div class="fixture-grid" id="fixtureGrid"></div>
+  <div class="sec">
+    <div class="sec-h sh-pool" onclick="tog('poolSec')">🔧 Pool Fittings (at Pool/Feature) <span class="chv" id="poolSecC">▼</span></div>
+    <div class="sec-b" id="poolSecB"><div class="fgrid" id="poolGrid"></div></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h sh-equip" onclick="tog('equipSec')">⚙️ Equipment Connections <span class="chv" id="equipSecC">▼</span></div>
+    <div class="sec-b" id="equipSecB"><div class="fgrid" id="equipGrid"></div></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h sh-pipe" onclick="tog('pipeSec')">🔗 Main Pipeline Runs <span class="chv" id="pipeSecC">▼</span></div>
+    <div class="sec-b" id="pipeSecB"><div id="pipeContainer"></div></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h sh-ptest" onclick="tog('ptestSec')">🧪 Pressure Testing Joints <span class="chv" id="ptestSecC">▼</span></div>
+    <div class="sec-b" id="ptestSecB">
+      <div class="pt-info">Each <strong>Inlet, Vacuum, Main Drain, Overflow &amp; Skimmer</strong> line gets <strong>1 additional joint</strong> for pressure testing. Pipe sizes auto-match the fixture connection sizes entered above.</div>
+      <table class="pt-tbl" id="ptTbl">
+        <thead><tr><th>Fixture Type</th><th>Lines</th><th>Pipe Size</th><th>Add. Joints</th><th>Glue (btl)</th><th>Cleaner (btl)</th></tr></thead>
+        <tbody id="ptBody"><tr><td colspan="6" style="text-align:center;padding:20px;color:#888">Enter fixture data above — auto-calculated</td></tr></tbody>
+      </table>
     </div>
   </div>
 
-  <!-- Section 2: Main Pipeline Runs -->
-  <div class="section">
-    <div class="section-header" onclick="toggleSection('pipelineSection')">
-      🔗 Main Pipeline Runs <span class="chevron" id="pipelineSectionChevron">▼</span>
-    </div>
-    <div class="section-body" id="pipelineSectionBody">
-      <div id="pipelineContainer"></div>
-    </div>
-  </div>
-
-  <!-- Results -->
-  <div class="section">
-    <div class="section-header" onclick="toggleSection('resultsSection')">
-      📊 Calculation Results <span class="chevron" id="resultsSectionChevron">▼</span>
-    </div>
-    <div class="section-body" id="resultsSectionBody">
-      <div class="actions-bar">
-        <button class="btn btn-primary" onclick="calculate()">🔄 Calculate</button>
-        <button class="btn btn-success" onclick="copyTable()">📋 Copy Table</button>
-        <button class="btn btn-warning" onclick="exportCSV()">📥 Export CSV</button>
-        <button class="btn btn-outline" style="color:var(--accent);border-color:var(--accent);" onclick="window.print()">🖨️ Print</button>
+  <div class="sec">
+    <div class="sec-h sh-result" onclick="tog('resSec')">📊 Calculation Results <span class="chv" id="resSecC">▼</span></div>
+    <div class="sec-b" id="resSecB">
+      <div class="acts">
+        <button class="b bp" onclick="calculate()">🔄 Calculate</button>
+        <button class="b bs" onclick="previewOrder()">👁️ Preview Order</button>
+        <button class="b bw" onclick="copyTable()">📋 Copy Table</button>
+        <button class="b bw" onclick="exportCSV()">📥 Export CSV</button>
+        <button class="b bo" style="color:var(--navy);border-color:var(--navy)" onclick="exportHTML()">📄 Export Report</button>
+        <button class="b bo" style="color:var(--navy);border-color:var(--navy)" onclick="window.print()">🖨️ Print</button>
       </div>
-      <div class="summary-cards" id="summaryCards" style="display:none;"></div>
-      <div class="results-table-wrapper">
-        <table class="results-table" id="resultsTable">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Category</th>
-              <th>Item</th>
-              <th>Pipe Size</th>
-              <th>Qty / Distance</th>
-              <th>Total Joints</th>
-              <th>Glue (bottles)</th>
-              <th>Cleaner (bottles)</th>
-            </tr>
-          </thead>
-          <tbody id="resultsBody">
-            <tr><td colspan="8" style="text-align:center;padding:30px;color:#999;">Click "Calculate" to generate results</td></tr>
-          </tbody>
+      <div class="scards" id="scards" style="display:none"></div>
+      <div class="rtw">
+        <table class="rtbl" id="rtbl">
+          <thead><tr><th>#</th><th>Category</th><th>Item</th><th>Pipe Size</th><th>Detail</th><th>Total Joints</th><th>Glue (btl)</th><th>Cleaner (btl)</th></tr></thead>
+          <tbody id="rbody"><tr><td colspan="8" style="text-align:center;padding:30px;color:#999">Click <strong>Calculate</strong> to generate results</td></tr></tbody>
         </table>
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="mbg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="mdl">
+    <div class="mdl-h"><h2>📦 Order Preview</h2><button class="b bo bsm" onclick="closeModal()">✕ Close</button></div>
+    <div class="mdl-b" id="modalBody"></div>
+    <div style="padding:0 24px 20px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="b bp" onclick="copyOrderTable()">📋 Copy Order</button>
+      <button class="b bw" onclick="exportOrderCSV()">📥 Export CSV</button>
+      <button class="b bs" onclick="printOrder()">🖨️ Print</button>
     </div>
   </div>
 </div>
@@ -457,464 +243,346 @@ body {
 <div class="toast" id="toast"></div>
 
 <script>
-// ========== CONFIG ==========
-const PIPE_SIZES = ['1"','1.5"','2"','2.5"','3"','4"','6"','8"','10"'];
-const PIPE_SIZE_INCHES = { '1"':1, '1.5"':1.5, '2"':2, '2.5"':2.5, '3"':3, '4"':4, '6"':6, '8"':8, '10"':10 };
-const CONSTANT = 24; // inch·joints per bottle
+// === CONFIG ===
+const PS=['1"','1.5"','2"','2.5"','3"','4"','6"','8"','10"'];
+const PI={'1"':1,'1.5"':1.5,'2"':2,'2.5"':2.5,'3"':3,'4"':4,'6"':6,'8"':8,'10"':10};
+const K=24;
 
-const FIXTURES = [
-  { id:'inlet', name:'Pool/Feature Inlet', icon:'🔵', jointsEach:4, defaultPipe:'2"' },
-  { id:'vacuum', name:'Pool/Feature Vacuum Point', icon:'🟣', jointsEach:4, defaultPipe:'2"' },
-  { id:'maindrain', name:'Main Drain', icon:'🔴', jointsEach:3, defaultPipe:'3"' },
-  { id:'overflow', name:'Overflow Drain', icon:'🟠', jointsEach:3, defaultPipe:'4"' },
-  { id:'skimmer', name:'Skimmer', icon:'🟡', jointsEach:3, defaultPipe:'2"' },
-  { id:'heatcool', name:'Heat Cool Unit', icon:'🟢', jointsEach:5, defaultPipe:'3"' },
+const POOL_FIX=[
+  {id:'inlet',name:'Pool/Feature Inlet',icon:'🔵',jpe:4,dp:'2"'},
+  {id:'vacuum',name:'Pool/Feature Vacuum Point',icon:'🟣',jpe:4,dp:'2"'},
+  {id:'maindrain',name:'Main Drain',icon:'🔴',jpe:3,dp:'3"'},
+  {id:'overflow',name:'Overflow Drain',icon:'🟠',jpe:3,dp:'4"'},
+  {id:'skimmer',name:'Skimmer',icon:'🟡',jpe:3,dp:'2"'},
+  {id:'heatcool',name:'Heat Cool Unit',icon:'🟢',jpe:5,dp:'3"'},
 ];
 
-const PIPELINE_TYPES = [
-  { id:'p_inlet', name:'Main Inlet Line', icon:'🔵' },
-  { id:'p_vacuum', name:'Main Vacuum Line', icon:'🟣' },
-  { id:'p_drain', name:'Main Drain Line', icon:'🔴' },
-  { id:'p_overflow', name:'Main Overflow Line', icon:'🟠' },
-  { id:'p_skimmer', name:'Main Skimmer Line', icon:'🟡' },
-  { id:'p_heatcool', name:'Main Heat Cool Unit Line', icon:'🟢' },
+const EQUIP_FIX=[
+  {id:'filterpump',name:'Filter Pump Connection',icon:'🔵',jpe:8,dp:'3"'},
+  {id:'boosterpump',name:'Booster Pump Connection',icon:'🟣',jpe:8,dp:'2"'},
+  {id:'featurepump',name:'Feature Pump Connection',icon:'🟠',jpe:8,dp:'2"'},
+  {id:'circpump',name:'Circulation Pump Connection',icon:'🔵',jpe:8,dp:'3"'},
+  {id:'uv',name:'UV Connection',icon:'🟡',jpe:8,dp:'3"'},
+  {id:'dosing',name:'Dosing Connection',icon:'🟢',jpe:10,dp:'1.5"'},
+  {id:'fillingline',name:'Filling Line Connection',icon:'🔴',jpe:15,dp:'2"'},
 ];
 
-// ========== STATE ==========
-let currentProject = '';
+const PTEST_IDS=['inlet','vacuum','maindrain','overflow','skimmer'];
 
-// ========== INIT ==========
-document.addEventListener('DOMContentLoaded', () => {
-  buildFixtureCards();
-  buildPipelineSections();
-  loadProjectList();
+const PIPE_TYPES=[
+  {id:'p_inlet',name:'Main Inlet Line',icon:'🔵'},
+  {id:'p_vacuum',name:'Main Vacuum Line',icon:'🟣'},
+  {id:'p_drain',name:'Main Drain Line',icon:'🔴'},
+  {id:'p_overflow',name:'Main Overflow Line',icon:'🟠'},
+  {id:'p_skimmer',name:'Main Skimmer Line',icon:'🟡'},
+  {id:'p_heatcool',name:'Main Heat Cool Unit Line',icon:'🟢'},
+];
+
+let curProj='';
+
+// === INIT ===
+document.addEventListener('DOMContentLoaded',()=>{
+  buildFix('poolGrid',POOL_FIX,'pf');
+  buildFix('equipGrid',EQUIP_FIX,'ef');
+  buildPipes();
+  loadProjList();
+  const last=localStorage.getItem('glue_last_proj');
+  if(last){const p=getP();if(p[last]){curProj=last;document.getElementById('projSel').value=last;applyForm(p[last])}}
 });
 
-// ========== BUILD UI ==========
-function buildFixtureCards() {
-  const grid = document.getElementById('fixtureGrid');
-  grid.innerHTML = FIXTURES.map(f => `
-    <div class="fixture-card">
-      <h3>${f.icon} ${f.name} <span class="badge">${f.jointsEach} joints each</span></h3>
-      <div class="form-row">
-        <label>Total Number:</label>
-        <input type="number" id="fix_${f.id}_qty" min="0" value="0" onchange="autoCalc()">
-      </div>
-      <div class="form-row">
-        <label>Pipe Size:</label>
-        <select id="fix_${f.id}_pipe" onchange="autoCalc()">
-          ${PIPE_SIZES.map(s => `<option value="${s}" ${s===f.defaultPipe?'selected':''}>${s}</option>`).join('')}
-        </select>
-      </div>
-    </div>
-  `).join('');
+// === BUILD UI ===
+function psOpts(def){return PS.map(s=>`<option value="${s}"${s===def?' selected':''}>${s}</option>`).join('')}
+
+function buildFix(gid,arr,pfx){
+  document.getElementById(gid).innerHTML=arr.map(f=>`
+    <div class="fcard"><h4>${f.icon} ${f.name} <span class="badge">${f.jpe} joints each</span></h4>
+    <div class="frow"><label>Total Number:</label><input type="number" id="${pfx}_${f.id}_qty" min="0" value="0" onchange="onInput()"></div>
+    <div class="frow"><label>Pipe Size:</label><select id="${pfx}_${f.id}_pipe" onchange="onInput()">${psOpts(f.dp)}</select></div></div>`).join('');
 }
 
-function buildPipelineSections() {
-  const container = document.getElementById('pipelineContainer');
-  container.innerHTML = PIPELINE_TYPES.map(pt => `
-    <div class="pipeline-section">
-      <div class="pipeline-section-header">
-        <h3>${pt.icon} ${pt.name}</h3>
-        <label style="font-size:0.82rem;font-weight:500;color:var(--fg2);margin-left:auto;">Lines:</label>
-        <select id="pl_${pt.id}_count" onchange="updatePipelineRows('${pt.id}')">
-          ${[0,1,2,3,4,5,6,7,8,9,10].map(n => `<option value="${n}">${n}</option>`).join('')}
-        </select>
-      </div>
-      <div id="pl_${pt.id}_table_wrap" style="display:none;">
-        <table class="pipeline-table">
-          <thead>
-            <tr>
-              <th style="width:40px">#</th>
-              <th>Pipe Size</th>
-              <th>Distance (m)</th>
-              <th>Joints (1 per 5m)</th>
-            </tr>
-          </thead>
-          <tbody id="pl_${pt.id}_tbody"></tbody>
-        </table>
-      </div>
-    </div>
-  `).join('');
+function buildPipes(){
+  document.getElementById('pipeContainer').innerHTML=PIPE_TYPES.map(pt=>`
+    <div class="plsec"><div class="plsec-h"><h4>${pt.icon} ${pt.name}</h4>
+    <label style="font-size:.78rem;font-weight:500;color:var(--fg2);margin-left:auto">Lines:</label>
+    <select id="pl_${pt.id}_cnt" onchange="updRows('${pt.id}')">${[...Array(11).keys()].map(n=>`<option value="${n}">${n}</option>`).join('')}</select></div>
+    <div id="pl_${pt.id}_tw" style="display:none"><table class="ptbl"><thead><tr><th style="width:36px">#</th><th>Pipe Size</th><th>Distance (m)</th><th>Joints</th></tr></thead>
+    <tbody id="pl_${pt.id}_tb"></tbody></table></div></div>`).join('');
 }
 
-function updatePipelineRows(typeId) {
-  const count = parseInt(document.getElementById(`pl_${typeId}_count`).value);
-  const wrap = document.getElementById(`pl_${typeId}_table_wrap`);
-  const tbody = document.getElementById(`pl_${typeId}_tbody`);
-  if (count === 0) { wrap.style.display = 'none'; tbody.innerHTML = ''; return; }
-  wrap.style.display = 'block';
-  tbody.innerHTML = '';
-  for (let i = 1; i <= count; i++) {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td class="line-num">${i}</td>
-      <td>
-        <select id="pl_${typeId}_${i}_pipe" onchange="updateJointCalc('${typeId}',${i})">
-          ${PIPE_SIZES.map(s => `<option value="${s}" ${s==='2"'?'selected':''}>${s}</option>`).join('')}
-        </select>
-      </td>
-      <td><input type="number" id="pl_${typeId}_${i}_dist" min="0" value="0" step="0.1" onchange="updateJointCalc('${typeId}',${i})"></td>
-      <td class="calc-cell" id="pl_${typeId}_${i}_joints">0</td>
-    `;
-    tbody.appendChild(tr);
+function updRows(tid){
+  const cnt=+gv(`pl_${tid}_cnt`);
+  const tw=document.getElementById(`pl_${tid}_tw`);
+  const tb=document.getElementById(`pl_${tid}_tb`);
+  if(!cnt){tw.style.display='none';tb.innerHTML='';return}
+  tw.style.display='block';tb.innerHTML='';
+  for(let i=1;i<=cnt;i++){
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="ln">${i}</td><td><select id="pl_${tid}_${i}_p" onchange="updJC('${tid}',${i})">${psOpts('2"')}</select></td><td><input type="number" id="pl_${tid}_${i}_d" min="0" value="0" step="0.1" onchange="updJC('${tid}',${i})"></td><td class="cc" id="pl_${tid}_${i}_j">0</td>`;
+    tb.appendChild(tr);
   }
 }
 
-function updateJointCalc(typeId, lineNum) {
-  const dist = parseFloat(document.getElementById(`pl_${typeId}_${lineNum}_dist`).value) || 0;
-  const joints = dist > 0 ? Math.ceil(dist / 5) : 0;
-  document.getElementById(`pl_${typeId}_${lineNum}_joints`).textContent = joints;
+function updJC(tid,i){
+  const d=+(document.getElementById(`pl_${tid}_${i}_d`).value)||0;
+  document.getElementById(`pl_${tid}_${i}_j`).textContent=d>0?Math.ceil(d/5):0;
+  onInput();
 }
 
-// ========== CALCULATION ==========
-function bottlesPerJoint(pipeSizeStr) {
-  const inches = PIPE_SIZE_INCHES[pipeSizeStr] || 2;
-  return inches / CONSTANT;
-}
+// === CALC ===
+function bpj(ps){return(PI[ps]||2)/K}
 
-function calculate() {
-  const rows = [];
-  let totalJoints = 0, totalGlue = 0, totalCleaner = 0;
-  let rowNum = 0;
+function calculate(){
+  const rows=[];let rn=0,tJ=0,tG=0,tC=0;
 
-  // === Fixtures ===
-  let fixJoints=0, fixGlue=0, fixCleaner=0;
-  FIXTURES.forEach(f => {
-    const qty = parseInt(document.getElementById(`fix_${f.id}_qty`).value) || 0;
-    const pipe = document.getElementById(`fix_${f.id}_pipe`).value;
-    if (qty > 0) {
-      const joints = qty * f.jointsEach;
-      const bpj = bottlesPerJoint(pipe);
-      const glue = joints * bpj;
-      const cleaner = joints * bpj;
-      rowNum++;
-      rows.push({
-        num: rowNum,
-        category: 'Pool Fixtures',
-        item: `${f.name} (×${qty})`,
-        pipe: pipe,
-        qtyDist: `${qty} nos`,
-        joints: joints,
-        glue: glue,
-        cleaner: cleaner,
-        isSubtotal: false
-      });
-      fixJoints += joints; fixGlue += glue; fixCleaner += cleaner;
-    }
-  });
-  if (fixJoints > 0) {
-    rows.push({ category:'Pool Fixtures', item:'Subtotal', joints:fixJoints, glue:fixGlue, cleaner:fixCleaner, isSubtotal:true });
+  function addGroup(label,arr,pfx){
+    let s={j:0,g:0,c:0};
+    arr.forEach(f=>{
+      const q=+gv(`${pfx}_${f.id}_qty`);const p=gv(`${pfx}_${f.id}_pipe`);
+      if(q>0){const j=q*f.jpe;const b=bpj(p);const g=j*b;rn++;
+        rows.push({n:rn,cat:label,it:`${f.name} (×${q})`,ps:p,det:`${q} nos × ${f.jpe} jts`,j,g,c:g,st:0});
+        s.j+=j;s.g+=g;s.c+=g}
+    });
+    if(s.j>0)rows.push({cat:label,it:'Subtotal',j:s.j,g:s.g,c:s.c,st:1});
+    tJ+=s.j;tG+=s.g;tC+=s.c;
   }
 
-  // === Pipeline Runs ===
-  PIPELINE_TYPES.forEach(pt => {
-    const count = parseInt(document.getElementById(`pl_${pt.id}_count`).value) || 0;
-    let secJoints=0, secGlue=0, secCleaner=0;
-    for (let i = 1; i <= count; i++) {
-      const pipe = document.getElementById(`pl_${pt.id}_${i}_pipe`).value;
-      const dist = parseFloat(document.getElementById(`pl_${pt.id}_${i}_dist`).value) || 0;
-      if (dist > 0) {
-        const joints = Math.ceil(dist / 5);
-        const bpj = bottlesPerJoint(pipe);
-        const glue = joints * bpj;
-        const cleaner = joints * bpj;
-        rowNum++;
-        rows.push({
-          num: rowNum,
-          category: pt.name,
-          item: `Line ${i} — ${dist}m`,
-          pipe: pipe,
-          qtyDist: `${dist} m`,
-          joints: joints,
-          glue: glue,
-          cleaner: cleaner,
-          isSubtotal: false
-        });
-        secJoints += joints; secGlue += glue; secCleaner += cleaner;
-      }
+  addGroup('Pool Fittings',POOL_FIX,'pf');
+  addGroup('Equipment',EQUIP_FIX,'ef');
+
+  // Pipelines
+  PIPE_TYPES.forEach(pt=>{
+    const cnt=+gv(`pl_${pt.id}_cnt`);let s={j:0,g:0,c:0};
+    for(let i=1;i<=cnt;i++){
+      const p=gv(`pl_${pt.id}_${i}_p`);const d=+(gv(`pl_${pt.id}_${i}_d`))||0;
+      if(d>0){const j=Math.ceil(d/5);const b=bpj(p);const g=j*b;rn++;
+        rows.push({n:rn,cat:pt.name,it:`Line ${i} — ${d}m`,ps:p,det:`${d} m`,j,g,c:g,st:0});
+        s.j+=j;s.g+=g;s.c+=g}
     }
-    if (secJoints > 0) {
-      rows.push({ category:pt.name, item:'Subtotal', joints:secJoints, glue:secGlue, cleaner:secCleaner, isSubtotal:true });
-    }
-    totalJoints += secJoints; totalGlue += secGlue; totalCleaner += secCleaner;
+    if(s.j>0)rows.push({cat:pt.name,it:'Subtotal',j:s.j,g:s.g,c:s.c,st:1});
+    tJ+=s.j;tG+=s.g;tC+=s.c;
   });
 
-  totalJoints += fixJoints; totalGlue += fixGlue; totalCleaner += fixCleaner;
+  // Pressure Testing
+  let sp={j:0,g:0,c:0};const ptR=[];
+  PTEST_IDS.forEach(fid=>{
+    const f=POOL_FIX.find(x=>x.id===fid);if(!f)return;
+    const q=+gv(`pf_${f.id}_qty`);const p=gv(`pf_${f.id}_pipe`);
+    if(q>0){const j=q;const b=bpj(p);const g=j*b;rn++;
+      rows.push({n:rn,cat:'Pressure Testing',it:`${f.name} (×${q} lines)`,ps:p,det:`${q}×1 jt`,j,g,c:g,st:0});
+      ptR.push({name:f.name,lines:q,pipe:p,j,g,c:g});
+      sp.j+=j;sp.g+=g;sp.c+=g}
+  });
+  if(sp.j>0)rows.push({cat:'Pressure Testing',it:'Subtotal',j:sp.j,g:sp.g,c:sp.c,st:1});
+  tJ+=sp.j;tG+=sp.g;tC+=sp.c;
 
-  // Render
-  const tbody = document.getElementById('resultsBody');
-  if (rows.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:#999;">No data entered. Please fill in fixture quantities or pipeline distances.</td></tr>';
-    document.getElementById('summaryCards').style.display = 'none';
-    return;
-  }
+  // Pressure test table
+  const ptb=document.getElementById('ptBody');
+  if(ptR.length){
+    ptb.innerHTML=ptR.map(r=>`<tr><td>${r.name}</td><td class="cc">${r.lines}</td><td>${r.pipe}</td><td class="cc">${r.j}</td><td class="cc">${r.g.toFixed(2)}</td><td class="cc">${r.c.toFixed(2)}</td></tr>`).join('')+
+      `<tr style="background:var(--green2);font-weight:700"><td>Total</td><td></td><td></td><td class="cc">${sp.j}</td><td class="cc">${sp.g.toFixed(2)}</td><td class="cc">${sp.c.toFixed(2)}</td></tr>`;
+  }else{ptb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;color:#888">No fixture data</td></tr>'}
 
-  tbody.innerHTML = rows.map(r => {
-    if (r.isSubtotal) {
-      return `<tr class="subtotal-row">
-        <td></td><td></td><td><strong>${r.item}</strong></td><td></td><td></td>
-        <td class="num"><strong>${r.joints}</strong></td>
-        <td class="num"><strong>${r.glue.toFixed(2)}</strong></td>
-        <td class="num"><strong>${r.cleaner.toFixed(2)}</strong></td>
-      </tr>`;
-    }
-    return `<tr>
-      <td class="num">${r.num}</td>
-      <td>${r.category}</td>
-      <td>${r.item}</td>
-      <td>${r.pipe}</td>
-      <td>${r.qtyDist}</td>
-      <td class="num">${r.joints}</td>
-      <td class="num">${r.glue.toFixed(2)}</td>
-      <td class="num">${r.cleaner.toFixed(2)}</td>
-    </tr>`;
-  }).join('') + `
-    <tr class="total-row">
-      <td colspan="5" style="text-align:right;">GRAND TOTAL</td>
-      <td class="num">${totalJoints}</td>
-      <td class="num">${totalGlue.toFixed(2)}</td>
-      <td class="num">${totalCleaner.toFixed(2)}</td>
-    </tr>
-    <tr class="total-row">
-      <td colspan="5" style="text-align:right;">ROUND UP (Order Qty)</td>
-      <td class="num">${totalJoints}</td>
-      <td class="num">${Math.ceil(totalGlue)}</td>
-      <td class="num">${Math.ceil(totalCleaner)}</td>
-    </tr>
-  `;
+  // Render results
+  const rb=document.getElementById('rbody');
+  if(!rows.length){rb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:30px;color:#999">No data entered.</td></tr>';document.getElementById('scards').style.display='none';return}
 
-  // Summary cards
-  const sc = document.getElementById('summaryCards');
-  sc.style.display = 'grid';
-  sc.innerHTML = `
-    <div class="summary-card">
-      <div class="val">${totalJoints}</div>
-      <div class="lbl">Total Joints</div>
-    </div>
-    <div class="summary-card" style="background:linear-gradient(135deg,#e67e22,#f39c12);">
-      <div class="val">${Math.ceil(totalGlue)}</div>
-      <div class="lbl">Glue Bottles (16 oz)</div>
-    </div>
-    <div class="summary-card" style="background:linear-gradient(135deg,#27ae60,#2ecc71);">
-      <div class="val">${Math.ceil(totalCleaner)}</div>
-      <div class="lbl">Cleaner Bottles (16 oz)</div>
-    </div>
-    <div class="summary-card" style="background:linear-gradient(135deg,#8e44ad,#9b59b6);">
-      <div class="val">${rows.filter(r=>!r.isSubtotal).length}</div>
-      <div class="lbl">Line Items</div>
-    </div>
-  `;
+  rb.innerHTML=rows.map(r=>{
+    if(r.st)return`<tr class="strow"><td></td><td></td><td><strong>${r.it}</strong></td><td></td><td></td><td class="num"><strong>${r.j}</strong></td><td class="num"><strong>${r.g.toFixed(2)}</strong></td><td class="num"><strong>${r.c.toFixed(2)}</strong></td></tr>`;
+    return`<tr><td class="num">${r.n}</td><td>${r.cat}</td><td>${r.it}</td><td>${r.ps}</td><td>${r.det}</td><td class="num">${r.j}</td><td class="num">${r.g.toFixed(2)}</td><td class="num">${r.c.toFixed(2)}</td></tr>`;
+  }).join('')+`
+    <tr class="trow"><td colspan="5" style="text-align:right">GRAND TOTAL</td><td class="num">${tJ}</td><td class="num">${tG.toFixed(2)}</td><td class="num">${tC.toFixed(2)}</td></tr>
+    <tr class="trow"><td colspan="5" style="text-align:right">ORDER QTY (Rounded Up)</td><td class="num">${tJ}</td><td class="num">${Math.ceil(tG)}</td><td class="num">${Math.ceil(tC)}</td></tr>`;
 
+  const sc=document.getElementById('scards');sc.style.display='grid';
+  sc.innerHTML=`
+    <div class="scard" style="background:linear-gradient(135deg,#0a1e30,#133a5c)"><div class="sv">${tJ}</div><div class="sl">Total Joints</div></div>
+    <div class="scard" style="background:linear-gradient(135deg,#d97706,#f59e0b)"><div class="sv">${Math.ceil(tG)}</div><div class="sl">Glue Bottles (16 oz)</div></div>
+    <div class="scard" style="background:linear-gradient(135deg,#059669,#10b981)"><div class="sv">${Math.ceil(tC)}</div><div class="sl">Cleaner Bottles (16 oz)</div></div>
+    <div class="scard" style="background:linear-gradient(135deg,#7c3aed,#8b5cf6)"><div class="sv">${rows.filter(r=>!r.st).length}</div><div class="sl">Line Items</div></div>`;
+
+  window._lastCalc={rows,tJ,tG,tC};
   toast('Calculation complete!');
 }
 
-function autoCalc() { /* optional live calc */ }
+// === PREVIEW ORDER ===
+function previewOrder(){
+  if(!window._lastCalc){calculate();if(!window._lastCalc)return}
+  const{rows,tJ,tG,tC}=window._lastCalc;
+  const proj=curProj||'Untitled Project';
+  const date=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
 
-// ========== PROJECT MANAGEMENT ==========
-function getProjects() {
-  try { return JSON.parse(localStorage.getItem('glue_calc_projects') || '{}'); } catch { return {}; }
-}
-function saveProjects(data) { localStorage.setItem('glue_calc_projects', JSON.stringify(data)); }
+  const cats={};rows.filter(r=>!r.st).forEach(r=>{if(!cats[r.cat])cats[r.cat]=[];cats[r.cat].push(r)});
 
-function loadProjectList() {
-  const projects = getProjects();
-  const sel = document.getElementById('projectSelect');
-  sel.innerHTML = '<option value="">— Select Project —</option>';
-  Object.keys(projects).sort().forEach(name => {
-    const opt = document.createElement('option');
-    opt.value = name; opt.textContent = name;
-    sel.appendChild(opt);
-  });
-  if (currentProject && projects[currentProject]) {
-    sel.value = currentProject;
-  }
-}
-
-function addProject() {
-  const name = document.getElementById('newProjectName').value.trim();
-  if (!name) { toast('Enter a project name!'); return; }
-  const projects = getProjects();
-  if (projects[name]) { toast('Project already exists!'); return; }
-  projects[name] = {};
-  saveProjects(projects);
-  currentProject = name;
-  document.getElementById('newProjectName').value = '';
-  loadProjectList();
-  document.getElementById('projectSelect').value = name;
-  resetForm();
-  toast(`Project "${name}" created!`);
-}
-
-function saveProject() {
-  const sel = document.getElementById('projectSelect');
-  let name = sel.value || document.getElementById('newProjectName').value.trim();
-  if (!name) { toast('Select or create a project first!'); return; }
-  const projects = getProjects();
-  projects[name] = collectFormData();
-  saveProjects(projects);
-  currentProject = name;
-  loadProjectList();
-  sel.value = name;
-  toast(`Project "${name}" saved!`);
-}
-
-function loadProject() {
-  const name = document.getElementById('projectSelect').value;
-  if (!name) return;
-  const projects = getProjects();
-  if (!projects[name]) return;
-  currentProject = name;
-  applyFormData(projects[name]);
-  toast(`Project "${name}" loaded!`);
-}
-
-function deleteProject() {
-  const name = document.getElementById('projectSelect').value;
-  if (!name) { toast('Select a project to delete!'); return; }
-  if (!confirm(`Delete project "${name}"?`)) return;
-  const projects = getProjects();
-  delete projects[name];
-  saveProjects(projects);
-  currentProject = '';
-  loadProjectList();
-  resetForm();
-  toast(`Project "${name}" deleted.`);
-}
-
-function collectFormData() {
-  const data = { fixtures:{}, pipelines:{} };
-  FIXTURES.forEach(f => {
-    data.fixtures[f.id] = {
-      qty: document.getElementById(`fix_${f.id}_qty`).value,
-      pipe: document.getElementById(`fix_${f.id}_pipe`).value
-    };
-  });
-  PIPELINE_TYPES.forEach(pt => {
-    const count = parseInt(document.getElementById(`pl_${pt.id}_count`).value) || 0;
-    data.pipelines[pt.id] = { count: count, lines:[] };
-    for (let i = 1; i <= count; i++) {
-      const pipeEl = document.getElementById(`pl_${pt.id}_${i}_pipe`);
-      const distEl = document.getElementById(`pl_${pt.id}_${i}_dist`);
-      if (pipeEl && distEl) {
-        data.pipelines[pt.id].lines.push({ pipe: pipeEl.value, dist: distEl.value });
-      }
-    }
-  });
-  return data;
-}
-
-function applyFormData(data) {
-  if (!data) return;
-  if (data.fixtures) {
-    FIXTURES.forEach(f => {
-      if (data.fixtures[f.id]) {
-        document.getElementById(`fix_${f.id}_qty`).value = data.fixtures[f.id].qty || 0;
-        document.getElementById(`fix_${f.id}_pipe`).value = data.fixtures[f.id].pipe || f.defaultPipe;
-      }
+  let tbl='';
+  Object.keys(cats).forEach(cat=>{
+    const items=cats[cat];
+    const sj=items.reduce((a,r)=>a+r.j,0);const sg=items.reduce((a,r)=>a+r.g,0);
+    items.forEach((r,i)=>{
+      tbl+=`<tr><td class="num">${r.n}</td><td>${i===0?cat:''}</td><td>${r.it}</td><td>${r.ps}</td><td class="num">${r.j}</td><td class="num">${r.g.toFixed(2)}</td><td class="num">${r.c.toFixed(2)}</td></tr>`;
     });
-  }
-  if (data.pipelines) {
-    PIPELINE_TYPES.forEach(pt => {
-      const pd = data.pipelines[pt.id];
-      if (pd) {
-        document.getElementById(`pl_${pt.id}_count`).value = pd.count || 0;
-        updatePipelineRows(pt.id);
-        if (pd.lines) {
-          pd.lines.forEach((line, idx) => {
-            const i = idx + 1;
-            const pipeEl = document.getElementById(`pl_${pt.id}_${i}_pipe`);
-            const distEl = document.getElementById(`pl_${pt.id}_${i}_dist`);
-            if (pipeEl) pipeEl.value = line.pipe;
-            if (distEl) distEl.value = line.dist;
-            updateJointCalc(pt.id, i);
-          });
-        }
-      }
-    });
-  }
-}
-
-function resetForm() {
-  FIXTURES.forEach(f => {
-    document.getElementById(`fix_${f.id}_qty`).value = 0;
-    document.getElementById(`fix_${f.id}_pipe`).value = f.defaultPipe;
+    tbl+=`<tr style="background:#dbeafe;font-weight:600"><td></td><td colspan="3" style="text-align:right">${cat} Subtotal</td><td class="num">${sj}</td><td class="num">${sg.toFixed(2)}</td><td class="num">${sg.toFixed(2)}</td></tr>`;
   });
-  PIPELINE_TYPES.forEach(pt => {
-    document.getElementById(`pl_${pt.id}_count`).value = 0;
-    updatePipelineRows(pt.id);
+
+  document.getElementById('modalBody').innerHTML=`
+    <div class="oh"><h2>🧴 PVC Glue & Cleaner — Order Summary</h2><p><strong>${proj}</strong> &nbsp;|&nbsp; Generated: ${date}</p></div>
+    <div class="osum"><h3>📦 Order Quantities</h3>
+      <div class="orow"><span>Oatey Heavy Duty Clear PVC Solvent Cement (16oz) — #30876</span><strong>${Math.ceil(tG)} bottles</strong></div>
+      <div class="orow"><span>Oatey Clear Cleaner (16oz) — #30795</span><strong>${Math.ceil(tC)} bottles</strong></div>
+      <div class="orow" style="border-top:1px solid #93c5fd;padding-top:6px;margin-top:6px"><span>Total Joints</span><strong>${tJ}</strong></div>
+    </div>
+    <table class="otbl" id="orderTbl">
+      <thead><tr><th>#</th><th>Category</th><th>Item</th><th>Pipe</th><th>Joints</th><th>Glue (btl)</th><th>Cleaner (btl)</th></tr></thead>
+      <tbody>${tbl}
+        <tr class="trow"><td colspan="4" style="text-align:right">GRAND TOTAL</td><td class="num">${tJ}</td><td class="num">${tG.toFixed(2)}</td><td class="num">${tC.toFixed(2)}</td></tr>
+        <tr class="trow"><td colspan="4" style="text-align:right">ORDER QTY</td><td class="num">${tJ}</td><td class="num">${Math.ceil(tG)}</td><td class="num">${Math.ceil(tC)}</td></tr>
+      </tbody>
+    </table>
+    <div class="oftr">Products: Oatey Heavy Duty Clear PVC Solvent Cement #30876 (16oz) & Oatey Clear Cleaner #30795 (16oz)<br>Basis: 24 inch·joints per 16oz bottle | Joint spacing on pipelines: 1 per 5m</div>`;
+  document.getElementById('modalBg').classList.add('show');
+}
+
+function closeModal(){document.getElementById('modalBg').classList.remove('show')}
+
+function copyOrderTable(){
+  const t=document.getElementById('orderTbl');if(!t)return;
+  let txt='';t.querySelectorAll('tr').forEach(r=>{const v=[];r.querySelectorAll('th,td').forEach(c=>v.push(c.textContent.trim()));txt+=v.join('\t')+'\n'});
+  navigator.clipboard.writeText(txt).then(()=>toast('Order copied!')).catch(()=>toast('Copy failed'));
+}
+function exportOrderCSV(){
+  const t=document.getElementById('orderTbl');if(!t)return;let csv='';
+  t.querySelectorAll('tr').forEach(r=>{const v=[];r.querySelectorAll('th,td').forEach(c=>v.push('"'+c.textContent.trim().replace(/"/g,'""')+'"'));csv+=v.join(',')+'\n'});
+  dlFile(csv,`${(curProj||'order').replace(/\s+/g,'_')}_order.csv`,'text/csv');
+}
+function printOrder(){window.print()}
+
+// === EXPORT ===
+function copyTable(){
+  const t=document.getElementById('rtbl');let txt='';
+  t.querySelectorAll('tr').forEach(r=>{const v=[];r.querySelectorAll('th,td').forEach(c=>v.push(c.textContent.trim()));txt+=v.join('\t')+'\n'});
+  navigator.clipboard.writeText(txt).then(()=>toast('Table copied!')).catch(()=>{const a=document.createElement('textarea');a.value=txt;document.body.appendChild(a);a.select();document.execCommand('copy');document.body.removeChild(a);toast('Copied!')});
+}
+function exportCSV(){
+  const t=document.getElementById('rtbl');let csv='';
+  t.querySelectorAll('tr').forEach(r=>{const v=[];r.querySelectorAll('th,td').forEach(c=>v.push('"'+c.textContent.trim().replace(/"/g,'""')+'"'));csv+=v.join(',')+'\n'});
+  dlFile(csv,`${(curProj||'calc').replace(/\s+/g,'_')}_glue_cleaner.csv`,'text/csv');
+}
+function exportHTML(){
+  if(!window._lastCalc){calculate();if(!window._lastCalc)return}
+  previewOrder();
+  setTimeout(()=>{
+    const body=document.getElementById('modalBody').innerHTML;
+    const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Order Report - ${curProj||'Project'}</title>
+<style>body{font-family:Arial,sans-serif;max-width:900px;margin:auto;padding:20px}table{width:100%;border-collapse:collapse;font-size:13px;margin:16px 0}th,td{padding:8px 10px;border:1px solid #ddd;text-align:left}th{background:#0a1e30;color:#fff}.trow{background:#0a1e30!important;color:#fff;font-weight:700}.num{text-align:right;font-family:monospace}.osum{background:#dbeafe;padding:16px;border-radius:8px;margin:16px 0}.orow{display:flex;justify-content:space-between;padding:4px 0}.oh{text-align:center;border-bottom:2px solid #0a1e30;padding-bottom:12px;margin-bottom:16px}.oftr{text-align:center;font-size:11px;color:#888;margin-top:16px;padding-top:12px;border-top:1px solid #ddd}</style></head><body>${body}</body></html>`;
+    dlFile(html,`${(curProj||'report').replace(/\s+/g,'_')}_report.html`,'text/html');
+    closeModal();toast('Report exported!');
+  },200);
+}
+function dlFile(content,name,type){const b=new Blob([content],{type});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click()}
+
+// === PROJECT MANAGEMENT ===
+function getP(){try{return JSON.parse(localStorage.getItem('glue_calc_projects')||'{}')}catch{return{}}}
+function setP(d){localStorage.setItem('glue_calc_projects',JSON.stringify(d))}
+
+function loadProjList(){
+  const p=getP();const s=document.getElementById('projSel');
+  s.innerHTML='<option value="">— Select Project —</option>';
+  Object.keys(p).sort().forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;s.appendChild(o)});
+  if(curProj&&p[curProj])s.value=curProj;
+}
+
+function addProject(){
+  const n=document.getElementById('projName').value.trim();
+  if(!n){toast('Enter a project name!');return}
+  const p=getP();if(p[n]){toast('Project exists!');return}
+  p[n]={};setP(p);curProj=n;document.getElementById('projName').value='';
+  loadProjList();document.getElementById('projSel').value=n;resetForm();
+  localStorage.setItem('glue_last_proj',n);toast(`"${n}" created!`);
+}
+
+function saveProject(){
+  const s=document.getElementById('projSel');
+  let n=s.value||document.getElementById('projName').value.trim();
+  if(!n){toast('Select or create a project!');return}
+  const p=getP();p[n]=collectForm();setP(p);curProj=n;
+  loadProjList();s.value=n;localStorage.setItem('glue_last_proj',n);
+  showAuto();toast(`"${n}" saved!`);
+}
+
+function loadProject(){
+  const n=document.getElementById('projSel').value;if(!n)return;
+  const p=getP();if(!p[n])return;curProj=n;applyForm(p[n]);
+  localStorage.setItem('glue_last_proj',n);toast(`"${n}" loaded!`);
+}
+
+function deleteProject(){
+  const n=document.getElementById('projSel').value;
+  if(!n){toast('Select a project!');return}
+  if(!confirm(`Delete "${n}"?`))return;
+  const p=getP();delete p[n];setP(p);curProj='';
+  if(localStorage.getItem('glue_last_proj')===n)localStorage.removeItem('glue_last_proj');
+  loadProjList();resetForm();toast(`"${n}" deleted.`);
+}
+
+function collectForm(){
+  const d={pool:{},equip:{},pipes:{},ts:new Date().toISOString()};
+  POOL_FIX.forEach(f=>{d.pool[f.id]={q:gv(`pf_${f.id}_qty`),p:gv(`pf_${f.id}_pipe`)}});
+  EQUIP_FIX.forEach(f=>{d.equip[f.id]={q:gv(`ef_${f.id}_qty`),p:gv(`ef_${f.id}_pipe`)}});
+  PIPE_TYPES.forEach(pt=>{
+    const cnt=+gv(`pl_${pt.id}_cnt`);d.pipes[pt.id]={cnt,lines:[]};
+    for(let i=1;i<=cnt;i++){
+      const pe=document.getElementById(`pl_${pt.id}_${i}_p`);
+      const de=document.getElementById(`pl_${pt.id}_${i}_d`);
+      if(pe&&de)d.pipes[pt.id].lines.push({p:pe.value,d:de.value})}
   });
-  document.getElementById('resultsBody').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:#999;">Click "Calculate" to generate results</td></tr>';
-  document.getElementById('summaryCards').style.display = 'none';
+  return d;
 }
 
-function resetAll() {
-  if (!confirm('Reset all inputs?')) return;
-  resetForm();
-  toast('Form reset.');
-}
-
-// ========== EXPORT / COPY ==========
-function copyTable() {
-  const table = document.getElementById('resultsTable');
-  const rows = table.querySelectorAll('tr');
-  let text = '';
-  rows.forEach(row => {
-    const cells = row.querySelectorAll('th,td');
-    const vals = [];
-    cells.forEach(c => vals.push(c.textContent.trim()));
-    text += vals.join('\t') + '\n';
-  });
-  navigator.clipboard.writeText(text).then(() => toast('Table copied to clipboard!')).catch(() => {
-    // Fallback
-    const ta = document.createElement('textarea');
-    ta.value = text; document.body.appendChild(ta); ta.select();
-    document.execCommand('copy'); document.body.removeChild(ta);
-    toast('Table copied!');
+function applyForm(d){
+  if(!d)return;
+  if(d.pool)POOL_FIX.forEach(f=>{if(d.pool[f.id]){sv(`pf_${f.id}_qty`,d.pool[f.id].q||0);sv(`pf_${f.id}_pipe`,d.pool[f.id].p||f.dp)}});
+  if(d.equip)EQUIP_FIX.forEach(f=>{if(d.equip[f.id]){sv(`ef_${f.id}_qty`,d.equip[f.id].q||0);sv(`ef_${f.id}_pipe`,d.equip[f.id].p||f.dp)}});
+  if(d.pipes)PIPE_TYPES.forEach(pt=>{
+    const pd=d.pipes[pt.id];if(pd){
+      sv(`pl_${pt.id}_cnt`,pd.cnt||0);updRows(pt.id);
+      if(pd.lines)pd.lines.forEach((l,idx)=>{
+        const i=idx+1;
+        const pe=document.getElementById(`pl_${pt.id}_${i}_p`);
+        const de=document.getElementById(`pl_${pt.id}_${i}_d`);
+        if(pe)pe.value=l.p;if(de)de.value=l.d;updJC(pt.id,i);
+      })}
   });
 }
 
-function exportCSV() {
-  const table = document.getElementById('resultsTable');
-  const rows = table.querySelectorAll('tr');
-  let csv = '';
-  rows.forEach(row => {
-    const cells = row.querySelectorAll('th,td');
-    const vals = [];
-    cells.forEach(c => vals.push('"' + c.textContent.trim().replace(/"/g,'""') + '"'));
-    csv += vals.join(',') + '\n';
-  });
-  const projectName = currentProject || 'glue_cleaner_calc';
-  const blob = new Blob([csv], { type:'text/csv' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `${projectName.replace(/\s+/g,'_')}_glue_cleaner.csv`;
-  a.click();
-  toast('CSV exported!');
+function resetForm(){
+  POOL_FIX.forEach(f=>{sv(`pf_${f.id}_qty`,0);sv(`pf_${f.id}_pipe`,f.dp)});
+  EQUIP_FIX.forEach(f=>{sv(`ef_${f.id}_qty`,0);sv(`ef_${f.id}_pipe`,f.dp)});
+  PIPE_TYPES.forEach(pt=>{sv(`pl_${pt.id}_cnt`,0);updRows(pt.id)});
+  document.getElementById('rbody').innerHTML='<tr><td colspan="8" style="text-align:center;padding:30px;color:#999">Click <strong>Calculate</strong></td></tr>';
+  document.getElementById('scards').style.display='none';
+  document.getElementById('ptBody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;color:#888">No fixture data</td></tr>';
+  window._lastCalc=null;
 }
+function resetAll(){if(!confirm('Reset all inputs?'))return;resetForm();toast('Form reset.')}
 
-// ========== UI HELPERS ==========
-function toggleSection(id) {
-  const body = document.getElementById(id + 'Body');
-  const chevron = document.getElementById(id + 'Chevron');
-  if (body) body.classList.toggle('collapsed');
-  if (chevron) {
-    const header = chevron.closest('.section-header');
-    if (header) header.classList.toggle('collapsed');
-  }
+// Auto-save
+let _st=null;
+function onInput(){
+  if(!curProj)return;
+  clearTimeout(_st);
+  _st=setTimeout(()=>{const p=getP();p[curProj]=collectForm();setP(p);showAuto()},1500);
 }
+function showAuto(){const b=document.getElementById('autoBadge');b.classList.add('vis');setTimeout(()=>b.classList.remove('vis'),2000)}
 
-function showInfo() {
-  const s = document.getElementById('infoSection');
-  s.style.display = s.style.display === 'none' ? 'block' : 'none';
+// Helpers
+function gv(id){const e=document.getElementById(id);return e?e.value:''}
+function sv(id,v){const e=document.getElementById(id);if(e)e.value=v}
+function tog(id){
+  const b=document.getElementById(id+'B');const c=document.getElementById(id+'C');
+  if(b)b.classList.toggle('coll');
+  if(c){const h=c.closest('.sec-h');if(h)h.classList.toggle('coll')}
 }
-
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
+function showInfo(){const s=document.getElementById('infoSec');s.style.display=s.style.display==='none'?'block':'none'}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
 </script>
 </body>
 </html>
